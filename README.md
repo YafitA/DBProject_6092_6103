@@ -44,33 +44,16 @@
 
 ---
 ### **קבצי SQL**  
-הסקריפטים SQL הבאים זמינים ב-repository:
-
-- **Create Tables Script** - הסקריפט ליצירת הטבלאות בבסיס הנתונים נמצא ב-repository:  
-📜 [View create_tables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/createTables.sql)
-
-- **Insert Data Script** - הסקריפט להכנסת נתונים לטבלאות בבסיס הנתונים נמצא ב-repository:  
-📜 [View insert_tables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/insertTables.sql)
-
-- **Drop Tables Script** - הסקריפט למחיקת הטבלאות נמצא ב-repository:  
-📜 [View drop_tables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/dropTables.sql)
-
-- **Select All Data Script** - הסקריפט לבחירת כל הנתונים מהטבלאות נמצא ב-repository:  
-📜 [View selectAll_tables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/selectAll.sql)
-
-
-### 
-
-📜 **[יצירת טבלאות - `createTables.sql`](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/createTables.sql)**  
-📜 **[הכנסת נתונים ראשונית - `insertTables.sql`](Phase1/scripts/insertTables.sql)**  
-📜 **[מחיקת טבלאות - `dropTables.sql`](Phase1/scripts/dropTables.sql)**  
-📜 **[שליפת כל הנתונים - `selectAll.sql`](Phase1/scripts/selectAll.sql)**  
+📜 [יצירת טבלאות - createTables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/createTables.sql)  
+📜 [הכנסת נתונים ראשונית - insertTables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/insertTables.sql)  
+📜 [מחיקת טבלאות - dropTables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/dropTables.sql)  
+📜 [שליפת כל הנתונים - selectAll.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/selectAll.sql) 
 
 ---
 
 ### **אכלוס נתונים בשלוש שיטות**  
 
-#### **שיטה 1: שימוש ב-Mockaroo (לטבלאות ללא FK)**
+#### **שיטה 1: שימוש ב-Mockaroo**
 נוצרו קובצי CSV עם נתונים לטבלאות הבאות:  
 📌 **[סוגי התנדבות (`VolunteerType.csv`)](Phase1/mockData/VolunteerType.csv)**  
 📌 **[משמרות (`Shift.csv`)](Phase1/mockData/Shift.csv)**  
