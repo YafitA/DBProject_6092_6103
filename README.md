@@ -40,7 +40,7 @@
 ---
 
 ### **DSD - תרשים מבנה נתונים**  
-![DSD Diagram](Phase A/ERDAndDSTFiles/DSD.png)
+![DSD Diagram](PhaseA/ERDAndDSTFiles/DSD.png)
 
 ---
 
