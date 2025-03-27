@@ -35,12 +35,12 @@
 ---
 
 ### **ERD - תרשים ישויות וקשרים**  
-![ERD Diagram](Phase1/ERDAndDSTFiles/ERD.png) 
+![ERD Diagram](C:\Users\YAFIT\IdeaProjects\DBProject_6092_6103-1\Phase A\ERDAndDSTFiles\ERD.png) 
 
 ---
 
 ### **DSD - תרשים מבנה נתונים**  
-![DSD Diagram](Phase1/ERDAndDSTFiles/DSD.png)
+![DSD Diagram](C:\Users\YAFIT\IdeaProjects\DBProject_6092_6103-1\Phase A\ERDAndDSTFiles\DSD.png)
 
 ---
 
