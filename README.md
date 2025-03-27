@@ -46,7 +46,7 @@
 
 ### **קבצי SQL**  
 
-📜 **[יצירת טבלאות - `createTables.sql`](Phase1/scripts/createTables.sql)**  
+📜 **[יצירת טבלאות - `createTables.sql`](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/createTables.sql)**  
 📜 **[הכנסת נתונים ראשונית - `insertTables.sql`](Phase1/scripts/insertTables.sql)**  
 📜 **[מחיקת טבלאות - `dropTables.sql`](Phase1/scripts/dropTables.sql)**  
 📜 **[שליפת כל הנתונים - `selectAll.sql`](Phase1/scripts/selectAll.sql)**  
