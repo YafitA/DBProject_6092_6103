@@ -69,9 +69,8 @@
 ---
 
 #### **שיטה 2: שימוש ב-[GenerateData](https://generatedata.com/)**
-📌 **[מתנדבים (`Volunteer.csv`)](Phase1/excelData/Volunteer.csv)**  
-📌 **[מנהלים (`Manager.csv`)](Phase1/excelData/Manager.csv)**  
-📌 **[פרויקטים (`Project.csv`)](Phase1/excelData/Project.csv)**  
+📌 **[מנהלים (`Manager.csv`)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Generatedata/Manager.csv)**  
+  
 
 **כך נראה המסך בעת יצירת הנתונים ב-GenerateData:**  
 ![יצירת נתונים ב-GenerateData](https://github.com/user-attachments/assets/da904d4b-27ce-4b7d-99d3-4ead3259cdbc)
@@ -81,11 +80,13 @@
 ---
 
 #### **שיטה 3: שימוש בקוד Python**
-📌 **[קשרים בין מתנדבים למשמרות (`WorksIn.csv`)](Phase1/pythonData/WorksIn.csv)**  
-📌 **[שיבוץ מתנדבים לפרויקטים (`AssignedTo.csv`)](Phase1/pythonData/AssignedTo.csv)**  
+🖥 **קבצי הקוד ליצירת הנתונים:**  
+📌 **[יצירת נתוני משמרות (ShiftDataCreate.py)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/ShiftDataCreate.py)**  
+📌 **[יצירת נתוני הכשרות (TrainingDataCreate.py)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/TrainingDataCreate.py)**  
 
-
-**קבצי הקוד לייצור הקבצים:**  
+📂 **קובצי הנתונים שנוצרו:**  
+📌 **[נתוני משמרות (Shift.csv)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/Shift.csv)**  
+📌 **[נתוני הכשרות (Training.csv)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/Training.csv)**  
 
 
 #### **העלאת הנתונים למסד הנתונים**
