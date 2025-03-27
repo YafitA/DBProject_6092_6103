@@ -40,7 +40,7 @@
 ---
 
 ### **DSD - תרשים מבנה נתונים**  
-![DSD Diagram]([PhaseA/ERDAndDSTFiles/DSD.png](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/ERDAndDSTFiles/DSD.png?raw=true))
+![DSD Diagram](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/ERDAndDSTFiles/DSD.png?raw=true).
 
 ---
 
