@@ -43,8 +43,23 @@
 ![DSD Diagram](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/ERDAndDSTFiles/DSD.png?raw=true).
 
 ---
-
 ### **קבצי SQL**  
+הסקריפטים SQL הבאים זמינים ב-repository:
+
+- **Create Tables Script** - הסקריפט ליצירת הטבלאות בבסיס הנתונים נמצא ב-repository:  
+📜 [View create_tables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/createTables.sql)
+
+- **Insert Data Script** - הסקריפט להכנסת נתונים לטבלאות בבסיס הנתונים נמצא ב-repository:  
+📜 [View insert_tables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/insertTables.sql)
+
+- **Drop Tables Script** - הסקריפט למחיקת הטבלאות נמצא ב-repository:  
+📜 [View drop_tables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/dropTables.sql)
+
+- **Select All Data Script** - הסקריפט לבחירת כל הנתונים מהטבלאות נמצא ב-repository:  
+📜 [View selectAll_tables.sql](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/selectAll.sql)
+
+
+### 
 
 📜 **[יצירת טבלאות - `createTables.sql`](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/SQLFiles/createTables.sql)**  
 📜 **[הכנסת נתונים ראשונית - `insertTables.sql`](Phase1/scripts/insertTables.sql)**  
