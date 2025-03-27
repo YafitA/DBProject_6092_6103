@@ -88,7 +88,7 @@
 
 #### **שיטה 2: GenerateData**
 > כך נראה המסך בעת יצירת הנתונים ב-GenerateData:  
-![יצירת נתונים ב-GenerateData]([נתיב_לתמונה_בפרויקט](https://github.com/user-attachments/assets/da904d4b-27ce-4b7d-99d3-4ead3259cdbc))
+![יצירת נתונים ב-GenerateData](https://github.com/user-attachments/assets/da904d4b-27ce-4b7d-99d3-4ead3259cdbc)
 
 #### **שיטה 3: Python**
 > קובצי ה-Python הופעלו והפיקו את הנתונים הבאים:  
@@ -103,8 +103,8 @@
 ---
 
 ### 📌 **שלב 3: אימות הנתונים במסד הנתונים**
-> כך נראה המסך לאחר שהנתונים נשמרו בהצלחה:  
-![אימות הנתונים במסד הנתונים](נ[תיב_לתמונה_בפרויקט](https://github.com/user-attachments/assets/b89e7e89-6da2-4889-a979-59973e221ae0))
+> כך נראה המסך לאחר שהנתונים אומתו בהצלחה:  
+![אימות הנתונים במסד הנתונים](https://github.com/user-attachments/assets/b89e7e89-6da2-4889-a979-59973e221ae0)
 ---
 
 ### **גיבוי ושחזור**  
