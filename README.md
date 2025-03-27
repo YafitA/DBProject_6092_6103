@@ -51,7 +51,7 @@
 
 ---
 
-### **אכלוס נתונים בשלוש שיטות**  
+### **יצירת נתונים בשלוש שיטות**  
 
 
 
@@ -62,12 +62,19 @@
 📌 **[הכשרות (`Training.csv`)](Phase1/mockData/Training.csv)**  
 📌 **[עבודה במחלקות (`WorksIn.csv`)](Phase1/mockData/WorksIn.csv)**  
 
+
+**כך נראה המסך בעת יצירת הנתונים ב-Mockaroo:** 
+![יצירת נתונים ב-Mockaroo](https://github.com/user-attachments/assets/0eb27539-6192-446f-bd4b-fc9fac418558)
+
 ---
 
 #### **שיטה 2: שימוש ב-[GenerateData](https://generatedata.com/)**
 📌 **[מתנדבים (`Volunteer.csv`)](Phase1/excelData/Volunteer.csv)**  
 📌 **[מנהלים (`Manager.csv`)](Phase1/excelData/Manager.csv)**  
 📌 **[פרויקטים (`Project.csv`)](Phase1/excelData/Project.csv)**  
+
+**כך נראה המסך בעת יצירת הנתונים ב-GenerateData:**  
+![יצירת נתונים ב-GenerateData](https://github.com/user-attachments/assets/da904d4b-27ce-4b7d-99d3-4ead3259cdbc)
 
 
 
@@ -78,32 +85,11 @@
 📌 **[שיבוץ מתנדבים לפרויקטים (`AssignedTo.csv`)](Phase1/pythonData/AssignedTo.csv)**  
 
 
-##### **תהליך העבודה**
-
-###### 📌 **שלב 1: יצירת הנתונים (שונה לכל שיטה)**
-
-###### **שיטה 1: Mockaroo**
-> כך נראה המסך בעת יצירת הנתונים ב-Mockaroo:  
-![יצירת נתונים ב-Mockaroo](https://github.com/user-attachments/assets/0eb27539-6192-446f-bd4b-fc9fac418558)
-
-###### **שיטה 2: GenerateData**
-> כך נראה המסך בעת יצירת הנתונים ב-GenerateData:  
-![יצירת נתונים ב-GenerateData](https://github.com/user-attachments/assets/da904d4b-27ce-4b7d-99d3-4ead3259cdbc)
-
-###### **שיטה 3: Python**
-> קובצי ה-Python הופעלו והפיקו את הנתונים הבאים:  
-![הרצת קובץ Python](נתיב_לתמונה_בפרויקט)
-
+#### **העלאת הנתונים למסד הנתונים**
 ---
 
-###### 📌 **שלב 2: העלאת הנתונים למסד הנתונים**
-> כך נראים הנתונים לאחר שהועלו למסד הנתונים:  
 ![העלאת הנתונים למסד הנתונים](https://github.com/user-attachments/assets/72541cef-719f-49af-8280-9f6446522b26)
 
----
-
-###### 📌 **שלב 3: אימות הנתונים במסד הנתונים**
-> כך נראה המסך לאחר שהנתונים אומתו בהצלחה:  
 ![אימות הנתונים במסד הנתונים](https://github.com/user-attachments/assets/b89e7e89-6da2-4889-a979-59973e221ae0)
 ---
 
