@@ -4,9 +4,10 @@ INSERT INTO VolunteerType (VolunteerTypeID, TypeName) VALUES (2, 'Specialized');
 INSERT INTO VolunteerType (VolunteerTypeID, TypeName) VALUES (3, 'Administrative');
 
 -- Inserting into Shift
-INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate) VALUES (1, TO_DATE('2025-04-01 08:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2025-04-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2025-04-01', 'YYYY-MM-DD'));
-INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate) VALUES (2, TO_DATE('2025-04-01 12:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2025-04-01 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2025-04-01', 'YYYY-MM-DD'));
-INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate) VALUES (3, TO_DATE('2025-04-01 16:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2025-04-01 20:00:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2025-04-01', 'YYYY-MM-DD'));
+INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate) VALUES (1, '08:00:00'::TIME, '12:00:00'::TIME, '2025-04-01'::DATE);
+INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate) VALUES (2, '12:00:00'::TIME, '16:00:00'::TIME, '2025-04-01'::DATE);
+INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate) VALUES (3, '16:00:00'::TIME, '20:00:00'::TIME, '2025-04-01'::DATE);
+
 
 -- Inserting into Training
 INSERT INTO Training (TrainingID, TrainingName, TrainingDate, Description) VALUES (1, 'Basic Volunteer Training', TO_DATE('2025-04-01', 'YYYY-MM-DD'), 'Introduction to volunteering roles.');
