@@ -1,0 +1,401 @@
+VolunteerTypeID,TypeName
+1,Patient Transport
+2,Reception Assistance
+3,Emergency Room Support
+4,Pediatric Ward Assistance
+5,Elderly Care Support
+6,Surgical Waiting Room Guide
+7,Cancer Patient Support
+8,Mental Health Companion
+9,Physical Therapy Aid
+10,Art Therapy Volunteer
+11,Music Therapy Assistant
+12,Playroom Supervision
+13,Waiting Room Hospitality
+14,ICU Family Support
+15,Bereavement Support
+16,Blood Bank Assistant
+17,Lab Sample Courier
+18,Pharmacy Support
+19,Wheelchair Assistance
+20,Medical Records Organization
+21,Pediatric Play Therapy
+22,Clerical Support
+23,Spiritual Care
+24,Library Cart Volunteer
+25,Gift Shop Helper
+26,Therapy Animal Handler
+27,Food Delivery for Patients
+28,Language Interpretation
+29,Chaplaincy Assistance
+30,Dental Clinic Helper
+31,Physiotherapy Support
+32,Hospice Volunteer
+33,Family Liaison
+34,Pre-Op Companion
+35,Recovery Room Support
+36,Vision Screening Helper
+37,Neonatal ICU Support
+38,Health Education Volunteer
+39,Nutrition Counseling Assistant
+40,Hand Hygiene Advocate
+41,Community Health Outreach
+42,Flu Shot Clinic Helper
+43,Diabetes Education Support
+44,Stroke Recovery Assistant
+45,Patient Surveys and Feedback
+46,Pain Management Support
+47,Rehabilitation Therapy Assistant
+48,Home Care Coordination
+49,Organ Donation Awareness
+50,Occupational Therapy Helper
+51,Infant Care Volunteer
+52,Blood Pressure Screening
+53,Oncology Ward Companion
+54,Child Life Specialist Assistant
+55,Elderly Mobility Support
+56,Bereavement Counseling
+57,Prosthetics and Orthotics Helper
+58,Hygiene Kit Distribution
+59,COVID-19 Testing Support
+60,Vaccination Center Volunteer
+61,Waiting Room Storytelling
+62,Post-Surgery Rehabilitation Aid
+63,Charity Fundraising
+64,Volunteer Trainer
+65,Community Health Events
+66,End-of-Life Support
+67,Meditation & Mindfulness Coaching
+68,Grief Counseling
+69,Neurology Clinic Helper
+70,Nutrition Program Assistant
+71,Social Work Support
+72,Prenatal Education Support
+73,Hospital Gardening Volunteer
+74,Sensory Room Volunteer
+75,Public Health Research
+76,Cancer Awareness Educator
+77,Genetic Counseling Assistant
+78,Hearing Screening Helper
+79,Home Visit Coordination
+80,Emergency Preparedness Educator
+81,Family Counseling Assistant
+82,Disability Support
+83,Pet Therapy Coordinator
+84,Volunteer Coordinator Assistant
+85,Ambulance Support Volunteer
+86,Disaster Relief Planning
+87,Data Entry for Medical Research
+88,Breastfeeding Support
+89,Prenatal Yoga Coach
+90,Domestic Violence Support
+91,Wheelchair Maintenance
+92,Heart Disease Awareness
+93,Dialysis Center Assistant
+94,Infant Massage Therapy
+95,Senior Companion
+96,Home Rehabilitation Assistance
+97,Cognitive Therapy Support
+98,Crisis Hotline Support
+99,Preventative Care Advocate
+100,Patient Wellbeing Surveys
+101,Meditation for Pain Relief
+102,Reflexology Assistant
+103,Newborn Care Volunteer
+104,Peer Support Groups
+105,Postpartum Support
+106,Smoking Cessation Coaching
+107,Virtual Health Assistant
+108,Pediatric Feeding Therapy
+109,Hospice Music Therapy
+110,Geriatric Fitness Coaching
+111,Dementia Support Volunteer
+112,Chronic Illness Peer Support
+113,Volunteer Chaplaincy
+114,Healthcare Advocacy
+115,Children's Oncology Volunteer
+116,Family Support for Terminally Ill
+117,Handwriting Therapy Volunteer
+118,Public Health Lectures
+119,AIDS/HIV Support
+120,Hygiene Awareness Programs
+121,Maternity Ward Assistant
+122,Palliative Care Support
+123,Therapeutic Storytelling
+124,Patient Rights Advocacy
+125,CPR & First Aid Trainer
+126,Ergonomics Education
+127,Social Media for Health Campaigns
+128,Support for Hospitalized Veterans
+129,Organ Transplant Support
+130,Adolescent Health Mentor
+131,Community Nutrition Coach
+132,Breast Cancer Screening Support
+133,Physical Activity Coach
+134,Caregiver Respite Support
+135,Mental Wellness Hotline
+136,Trauma Recovery Support
+137,Rehabilitation Games Facilitator
+138,Sensory Integration Therapy
+139,Accessibility Advocacy
+140,Therapy Dogs Volunteer
+141,Chaplain Services
+142,Genetic Testing Counselor
+143,Cancer Rehabilitation Support
+144,Stroke Prevention Education
+145,Grief Support Groups
+146,Patient Empowerment Programs
+147,Post-Surgical Home Care
+148,Smoking Awareness Campaigns
+149,Hospital Equipment Organizer
+150,Care Plan Navigator
+151,Speech Therapy Assistant
+152,Allergy Education Volunteer
+153,Endocrinology Clinic Support
+154,Holistic Medicine Volunteer
+155,Herbal Therapy Educator
+156,Preventative Screenings
+157,Pediatric Orthopedics Helper
+158,Psychological First Aid
+159,Functional Medicine Educator
+160,Public Health Volunteer
+161,Geriatric Nutritionist
+162,Oncology Massage Therapy
+163,Chronic Pain Support
+164,Speech & Language Screening
+165,Concussion Awareness Educator
+166,Cognitive Behavioral Therapy Aid
+167,Infant CPR Trainer
+168,Family Medical Advocacy
+169,Cancer Survivorship Coaching
+170,Domestic Abuse Awareness
+171,Handwashing Awareness Campaign
+172,Neurological Support Groups
+173,Art for Healing Programs
+174,Patient Peer Mentorship
+175,Substance Abuse Support
+176,Mental Health Screening Clinics
+177,Blood Sugar Testing Support
+178,Physical Fitness for Seniors
+179,Medical Conference Assistance
+180,Healthcare Research Volunteer
+181,Youth Health Awareness
+182,Stress Management for Patients
+183,Autism Support
+184,Crisis Intervention
+185,Burn Unit Volunteer
+186,Alzheimer's Care Support
+187,Brain Injury Support
+188,Ergonomic Training
+189,Refugee Health Assistance
+190,Respiratory Therapy Assistant
+191,PTSD Support Volunteer
+192,Suicide Prevention Hotlines
+193,Clinical Trial Patient Support
+194,Diabetes Peer Support
+195,Men’s Health Education
+196,Women’s Health Awareness
+197,Prenatal Nutrition Coaching
+198,Dermatology Clinic Support
+199,Pediatric Neurology Helper
+200,Patient Navigator
+201,Mental Health Crisis Responder
+202,Cardiology Clinic Volunteer
+203,Exercise Therapy Assistant
+204,Wound Care Support
+205,Virtual Patient Support
+206,Support for Rare Diseases
+207,Cultural Health Advocacy
+208,Nutrition Planning for Chronic Illness
+209,Aging-in-Place Volunteer
+210,Virtual Medical Scribing
+211,Burn Survivor Peer Support
+212,Bilingual Health Educator
+213,Behavioral Therapy Assistant
+214,Deaf and Hard-of-Hearing Support
+215,Vision Impairment Aid
+216,Preventative Health Coaching
+217,Neurodiversity Awareness
+218,Post-Traumatic Growth Coaching
+219,Body Positivity in Healthcare
+220,Disability Rights Awareness
+221,Kidney Transplant Coordination
+222,Anemia Awareness Support
+223,Surgical Recovery Assistance
+224,Postpartum Doula Support
+225,Chemotherapy Infusion Center Volunteer
+226,Speech Impairment Support
+227,Balance & Fall Prevention
+228,Clinical Nutrition Research
+229,Teen Mental Health Advocate
+230,Support Groups for Rare Disorders
+231,Transgender Healthcare Advocate
+232,Breastfeeding Peer Counselor
+233,Hearing Loss Prevention
+234,Alternative Therapy Guide
+235,Emergency Disaster Response Training
+236,Chronic Fatigue Syndrome Awareness
+237,Home Health Care Assistance
+238,Workplace Health & Safety Trainer
+239,High-Risk Pregnancy Support
+240,Pulmonary Rehabilitation Assistant
+241,Pediatric Chronic Disease Support
+242,Emergency Shelter Medical Aid
+243,Acupuncture for Cancer Patients
+244,Animal-Assisted Therapy in Hospitals
+245,Cancer Prevention Educator
+246,Virtual Mental Health Peer Support
+247,Family Planning Support
+248,Spinal Cord Injury Peer Support
+249,LGBTQ+ Health Advocacy
+250,Athletic Therapy Volunteer
+251,Acupressure Therapy Educator
+252,Integrated Healthcare Coordination
+253,Pediatric Rehabilitation
+254,Diabetes Meal Planning Support
+255,Sleep Hygiene Education
+256,Energy Healing Educator
+257,Physical Disability Advocacy
+258,Health Literacy Program
+259,Online Support for Isolated Patients
+260,Cross-Cultural Health Educator
+261,Clinical Ethics Committee Volunteer
+262,Digestive Health Awareness
+263,Occupational Health & Safety Educator
+264,Microbiome Research Support
+265,Traditional Medicine Awareness
+266,Behavioral Health Coaching
+267,Cognitive Rehabilitation
+268,Community Mental Health Speaker
+269,Disability Employment Support
+270,Pediatric Oncology Art Therapy
+271,Food Allergy Awareness
+272,Anxiety Management in Hospitals
+273,Medication Management Assistance
+274,Herbal Medicine Research
+275,Faith-Based Health Support
+276,Pain Management Education
+277,Pediatric Palliative Care Assistant
+278,Rural Health Access Volunteer
+279,Speech Recovery Support
+280,Assistive Technology Educator
+281,Cancer Immunotherapy Education
+282,Geriatric Exercise Programs
+283,Military Veterans Health Support
+284,Trauma-Focused Counseling
+285,Preventative Dentistry Education
+286,Functional Neurology Awareness
+287,Women's Preventative Health
+288,Memory Care Engagement
+289,Emergency Medical Interpreter
+290,Online Counseling Support
+291,Virtual Rehabilitation Coaching
+292,Patient Transport
+293,Reception Assistance
+294,Emergency Room Support
+295,Pediatric Ward Assistance
+296,Elderly Care Support
+297,Surgical Waiting Room Guide
+298,Cancer Patient Support
+299,Mental Health Companion
+300,Physical Therapy Aid
+301,Art Therapy Volunteer
+302,Music Therapy Assistant
+303,Playroom Supervision
+304,Waiting Room Hospitality
+305,ICU Family Support
+306,Bereavement Support
+307,Blood Bank Assistant
+308,Lab Sample Courier
+309,Pharmacy Support
+310,Wheelchair Assistance
+311,Medical Records Organization
+312,Pediatric Play Therapy
+313,Clerical Support
+314,Spiritual Care
+315,Library Cart Volunteer
+316,Gift Shop Helper
+317,Therapy Animal Handler
+318,Food Delivery for Patients
+319,Language Interpretation
+320,Chaplaincy Assistance
+321,Dental Clinic Helper
+322,Physiotherapy Support
+323,Hospice Volunteer
+324,Family Liaison
+325,Pre-Op Companion
+326,Recovery Room Support
+327,Vision Screening Helper
+328,Neonatal ICU Support
+329,Health Education Volunteer
+330,Nutrition Counseling Assistant
+331,Hand Hygiene Advocate
+332,Community Health Outreach
+333,Flu Shot Clinic Helper
+334,Diabetes Education Support
+335,Stroke Recovery Assistant
+336,Patient Surveys and Feedback
+337,Pain Management Support
+338,Rehabilitation Therapy Assistant
+339,Home Care Coordination
+340,Organ Donation Awareness
+341,Occupational Therapy Helper
+342,Infant Care Volunteer
+343,Blood Pressure Screening
+344,Oncology Ward Companion
+345,Child Life Specialist Assistant
+346,Elderly Mobility Support
+347,Bereavement Counseling
+348,Prosthetics and Orthotics Helper
+349,Hygiene Kit Distribution
+350,COVID-19 Testing Support
+351,Vaccination Center Volunteer
+352,Waiting Room Storytelling
+353,Post-Surgery Rehabilitation Aid
+354,Charity Fundraising
+355,Volunteer Trainer
+356,Community Health Events
+357,End-of-Life Support
+358,Meditation & Mindfulness Coaching
+359,Grief Counseling
+360,Neurology Clinic Helper
+361,Nutrition Program Assistant
+362,Social Work Support
+363,Prenatal Education Support
+364,Hospital Gardening Volunteer
+365,Sensory Room Volunteer
+366,Public Health Research
+367,Cancer Awareness Educator
+368,Genetic Counseling Assistant
+369,Hearing Screening Helper
+370,Home Visit Coordination
+371,Emergency Preparedness Educator
+372,Family Counseling Assistant
+373,Disability Support
+374,Pet Therapy Coordinator
+375,Volunteer Coordinator Assistant
+376,Ambulance Support Volunteer
+377,Disaster Relief Planning
+378,Data Entry for Medical Research
+379,Breastfeeding Support
+380,Prenatal Yoga Coach
+381,Domestic Violence Support
+382,Wheelchair Maintenance
+383,Heart Disease Awareness
+384,Dialysis Center Assistant
+385,Infant Massage Therapy
+386,Senior Companion
+387,Home Rehabilitation Assistance
+388,Cognitive Therapy Support
+389,Crisis Hotline Support
+390,Preventative Care Advocate
+391,Patient Wellbeing Surveys
+392,Meditation for Pain Relief
+393,Reflexology Assistant
+394,Newborn Care Volunteer
+395,Peer Support Groups
+396,Postpartum Support
+397,Smoking Cessation Coaching
+398,Virtual Health Assistant
+399,Pediatric Feeding Therapy
+400,Hospice Music Therapy
