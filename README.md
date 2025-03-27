@@ -35,12 +35,12 @@
 ---
 
 ### **ERD - תרשים ישויות וקשרים**  
-📌 **[צפייה בתרשים ה-ERD](Phase1/ERDAndDSD/ERD.png)**  
+![ERD Diagram](Phase1/ERDAndDSTFiles/ERD.png) 
 
 ---
 
 ### **DSD - תרשים מבנה נתונים**  
-📌 **[צפייה בתרשים ה-DSD](Phase1/ERDAndDSD/DSD.png)**  
+![DSD Diagram](Phase1/ERDAndDSTFiles/DSD.png)
 
 ---
 
