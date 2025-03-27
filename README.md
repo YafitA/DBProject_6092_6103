@@ -3,7 +3,7 @@
 # **Hospital Volunteer Management System**  
 
 **פרויקט מסד נתונים – ניהול מתנדבים בבית חולים**  
-**הוגש על ידי: אביט חזן ויפית אטון**  
+**הוגש על ידי: אביטל חזן ויפית אטון**  
 
 ---
 
@@ -35,12 +35,12 @@
 ---
 
 ### **ERD - תרשים ישויות וקשרים**  
-![ERD Diagram](PhaseA/ERDAndDSTFiles/ERD.png)
+![ERD Diagram]([PhaseA/ERDAndDSTFiles/ERD.png](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/ERDAndDSTFiles/ERD.png?raw=true))
 
 ---
 
 ### **DSD - תרשים מבנה נתונים**  
-![DSD Diagram](PhaseA/ERDAndDSTFiles/DSD.png)
+![DSD Diagram]([PhaseA/ERDAndDSTFiles/DSD.png](https://github.com/YafitA/DBProject_6092_6103-/blob/main/Phase%20A/ERDAndDSTFiles/DSD.png?raw=true))
 
 ---
 
