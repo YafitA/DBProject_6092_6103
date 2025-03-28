@@ -56,11 +56,10 @@
 
 
 #### **שיטה 1: שימוש ב-[Mockaroo](https://www.mockaroo.com/)**
-נוצרו קובצי CSV עם נתונים לטבלאות הבאות:  
+נוצרו קובצי CSV עם נתונים לטבלאות הבאות: 
+📌 **[מתנדבים (`Volunteer.csv`)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/mockarooFiles/Volunteer.csv)**  
 📌 **[סוגי התנדבות (`VolunteerType.csv`)](Phase1/mockData/VolunteerType.csv)**  
-📌 **[משמרות (`Shift.csv`)](Phase1/mockData/Shift.csv)**  
-📌 **[הכשרות (`Training.csv`)](Phase1/mockData/Training.csv)**  
-📌 **[עבודה במחלקות (`WorksIn.csv`)](Phase1/mockData/WorksIn.csv)**  
+
 
 
 **כך נראה המסך בעת יצירת הנתונים ב-Mockaroo:** 
@@ -79,15 +78,21 @@
 
 ---
 
-#### **שיטה 3: שימוש בקוד Python**
-🖥 **קבצי הקוד ליצירת הנתונים:**  
-📌 **[יצירת נתוני משמרות (ShiftDataCreate.py)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/ShiftDataCreate.py)**  
-📌 **[יצירת נתוני הכשרות (TrainingDataCreate.py)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/TrainingDataCreate.py)**  
+### **שיטה 3: שימוש בקוד Python**
+🖥 **קבצי הקוד ליצירת הנתונים:**
+- [**יצירת נתוני משמרות (ShiftDataCreate.py)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/ShiftDataCreate.py)
+- [**יצירת נתוני הכשרות (TrainingDataCreate.py)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/TrainingDataCreate.py)
+- [**יצירת נתוני פרויקטים (ProjectDataCreate.py)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/ProjectDataCreate.py)
+- [**יצירת נתוני משימות (AssignedToCreateData.py)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/AssignedToCreateData.py)
+- [**יצירת נתוני עבודה (WorksInCreateData.py)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/WorksInCreateData.py)
 
-📂 **קובצי הנתונים שנוצרו:**  
-📌 **[נתוני משמרות (Shift.csv)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/Shift.csv)**  
-📌 **[נתוני הכשרות (Training.csv)](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/Training.csv)**  
-
+📂 **קובצי הנתונים שנוצרו:**
+- [**נתוני משמרות (Shift.csv)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/Shift.csv)
+- [**נתוני הכשרות (Training.csv)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/Training.csv)
+- [**נתוני פרויקטים (Project.csv)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/Project.csv)
+- [**נתוני משימות (AssignedTo.csv)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/AssignedTo.csv)
+- [**נתוני עבודה (WorksIn.csv)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/WorksIn.csv)
+- [**נתוני הכשרה (Trained.csv)**](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Programing/Trained.csv)
 
 #### **העלאת הנתונים למסד הנתונים**
 
