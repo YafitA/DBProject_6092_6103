@@ -24,3 +24,6 @@ SELECT * FROM Trained;
 
 -- Selecting all data from AssignedTo
 SELECT * FROM AssignedTo;
+
+
+
