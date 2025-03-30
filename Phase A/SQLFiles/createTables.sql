@@ -1,23 +1,23 @@
-CREATE TABLE VolunteerType (
+CREATE TABLE if not exists VolunteerType (
                                VolunteerTypeID INT PRIMARY KEY,
                                TypeName VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Shift (
+CREATE TABLE if not exists Shift (
                        ShiftID INT PRIMARY KEY,
                        StartTime TIME NOT NULL,
                        EndTime TIME NOT NULL,
                        ShiftDate DATE NOT NULL
 );
 
-CREATE TABLE Training (
+CREATE TABLE if not exists Training (
                           TrainingID INT PRIMARY KEY,
                           TrainingName VARCHAR(255) NOT NULL,
                           TrainingDate DATE NOT NULL,
                           Description VARCHAR(4000) NOT NULL
 );
 
-CREATE TABLE Manager (
+CREATE TABLE if not exists Manager (
                          ManagerID INT PRIMARY KEY,
                          FirstName VARCHAR(50) NOT NULL,
                          LastName VARCHAR(50) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE Manager (
                          PhoneNumber VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE Volunteer (
+CREATE TABLE if not exists Volunteer (
                            VolunteerID INT PRIMARY KEY,
                            FirstName VARCHAR(50) NOT NULL,
                            LastName VARCHAR(50) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE Volunteer (
                            FOREIGN KEY (VolunteerTypeID) REFERENCES VolunteerType(VolunteerTypeID) ON DELETE CASCADE
 );
 
-CREATE TABLE Project (
+CREATE TABLE if not exists Project (
                          ProjectID INT PRIMARY KEY,
                          ProjectName VARCHAR(255) NOT NULL,
                          Description VARCHAR(4000) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE Project (
                          FOREIGN KEY (ManagerID) REFERENCES Manager(ManagerID) ON DELETE CASCADE
 );
 
-CREATE TABLE WorksIn (
+CREATE TABLE if not exists WorksIn (
                          VolunteerID INT,
                          ShiftID INT,
                          PRIMARY KEY (VolunteerID, ShiftID),
@@ -56,7 +56,7 @@ CREATE TABLE WorksIn (
                          FOREIGN KEY (ShiftID) REFERENCES Shift(ShiftID) ON DELETE CASCADE
 );
 
-CREATE TABLE Trained (
+CREATE TABLE if not exists Trained (
                          VolunteerID INT,
                          TrainingID INT,
                          PRIMARY KEY (VolunteerID, TrainingID),
@@ -64,7 +64,7 @@ CREATE TABLE Trained (
                          FOREIGN KEY (TrainingID) REFERENCES Training(TrainingID) ON DELETE CASCADE
 );
 
-CREATE TABLE AssignedTo (
+CREATE TABLE if not exists AssignedTo (
                             VolunteerID INT,
                             ProjectID INT,
                             PRIMARY KEY (VolunteerID, ProjectID),
