@@ -23,12 +23,14 @@ JOIN VolunteerType vt ON v.VolunteerTypeID = vt.VolunteerTypeID
 GROUP BY vt.TypeName
 ORDER BY VolunteerCount DESC;
 
-/* 3. Volunteers who never had any training and their managers */
+/* 3. Volunteers who never had any training and their managers name */
 SELECT
     V.VolunteerID,
     V.FirstName,
     V.LastName,
     M.FirstName || ' ' || M.LastName AS ManagerName
+    M.Email AS ManagerEmail
+    M.PhoneNumber AS ManagerPhoneNumber
 FROM Volunteer V
 JOIN Manager M ON V.ManagerID = M.ManagerID
 WHERE NOT EXISTS (
@@ -92,16 +94,37 @@ GROUP BY v.VolunteerID, v.FirstName, v.LastName
 HAVING COUNT(t.TrainingID) > 2
 ORDER BY TrainingCount DESC;
 
-/* 8. Projects that started and ended in different years, showing the duration and manager */
+/*
+8. Suggest trainings for volunteers who never had any training,
+    only if:
+    - The training date is in the future or today
+    - The training does not overlap with any of the volunteer's project dates
+*/
 SELECT
-    p.ProjectName,
-    p.StartDate,
-    p.EndDate,
-    EXTRACT(YEAR FROM p.StartDate) AS StartYear,
-    EXTRACT(YEAR FROM p.EndDate) AS EndYear,
-    (p.EndDate - p.StartDate) AS DurationDays,
-    m.FirstName || ' ' || m.LastName AS ManagerName
-FROM Project p
-JOIN Manager m ON p.ManagerID = m.ManagerID
-WHERE EXTRACT(YEAR FROM p.StartDate) <> EXTRACT(YEAR FROM p.EndDate)
-ORDER BY p.StartDate;
+    v.VolunteerID,
+    v.FirstName || ' ' || v.LastName AS VolunteerName,
+    t.TrainingID,
+    t.TrainingName,
+    t.TrainingDate
+FROM Volunteer v
+/* Combine each untrained volunteer with all available trainings */
+CROSS JOIN Training t
+/* Only volunteers who have never attended any training */
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Trained tr
+    WHERE tr.VolunteerID = v.VolunteerID
+)
+/* Exclude trainings that overlap with any project assigned to the volunteer */
+AND NOT EXISTS (
+    SELECT 1
+    FROM AssignedTo a
+    JOIN Project p ON a.ProjectID = p.ProjectID
+    WHERE a.VolunteerID = v.VolunteerID
+      AND t.TrainingDate BETWEEN p.StartDate AND p.EndDate
+)
+/* Only suggest trainings that are today or in the future */
+AND t.TrainingDate >= CURRENT_DATE
+/* Sort by volunteer and training date */
+ORDER BY v.VolunteerID, t.TrainingDate;
+
