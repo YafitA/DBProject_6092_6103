@@ -102,7 +102,7 @@
 ---
 
 ### **גיבוי ושחזור**  
-📌 **[תיקיית גיבויים]([Phase1/Backup](https://github.com/YafitA/DBProject_6092_6103/blob/main/Phase%20A/Backup/backupEx1_2025-03-28))**  
+📌 **[תיקיית גיבויים](https://github.com/YafitA/DBProject_6092_6103/tree/main/Phase%20A/Backup)**  
 
 ✅ גובו כל הנתונים ונבדק שחזור על מחשב אחר.  
 
