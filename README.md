@@ -293,8 +293,7 @@ AND NOT EXISTS (
 AND t.TrainingDate >= CURRENT_DATE
 ORDER BY v.VolunteerID, t.TrainingDate;
 ```
-### שאילתות UPDATE
-
+---
 ### שאילתות DELETE
 #### 1. 
 
@@ -305,3 +304,27 @@ ORDER BY v.VolunteerID, t.TrainingDate;
 
 ### 3. 
 ![photo_5764772063687591307_y](https://github.com/user-attachments/assets/bac05ff9-a022-4f32-94b8-439d61eee583)
+
+---
+### שאילתות UPDATE
+
+#### 1. עדכון
+לפני העדכון:
+![עדכוןלפני1](https://github.com/user-attachments/assets/c8ce0447-09a0-44b3-8073-a36c47615e7d)
+
+לאחר העדכון:
+![עדכוןאחרי1](https://github.com/user-attachments/assets/b4d32b14-fc9c-42d8-a77f-9f7726adf744)
+
+#### 2. עדכון
+לפני העדכון:
+![עדכוןלפני2](https://github.com/user-attachments/assets/de06c1e0-87e3-4ce6-afd0-2dad3addc210)
+
+לאחר העדכון:
+![עדכוןאחרי2](https://github.com/user-attachments/assets/2c6b24a1-d9c2-4843-8c09-efb820c0133c)
+
+#### 1. עדכון
+לפני העדכון:
+![עדכוןלפני3](https://github.com/user-attachments/assets/2405be3b-5b76-4058-aa67-80026b699bc7)
+
+לאחר העדכון:
+![עדכוןאחרי3](https://github.com/user-attachments/assets/07bce255-90a1-4030-9d6a-2114ba433029)
