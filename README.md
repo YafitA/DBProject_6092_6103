@@ -13,9 +13,9 @@
   - [ERD - תרשים ישויות וקשרים](#erd---תרשים-ישויות-וקשרים)  
   - [DSD - תרשים מבנה נתונים](#dsd---תרשים-מבנה-נתונים)  
   - [קבצי SQL](#קבצי-sql)  
-  - [אכלוס נתונים בשלוש שיטות](#אכלוס-נתונים-בשלוש-שיטות)  
+  - [אכלוס נתונים בשלוש שיטות](#יצירת-נתונים-בשלוש-שיטות)  
   - [גיבוי ושחזור](#גיבוי-ושחזור)  
-- [שלב ב': אינטגרציה ובדיקות](#שלב-ב-אינטגרציה-ובדיקות)  
+- [שלב ב': שאילתות](#שלב-ב-שאילתות)  
 
 ---
 
@@ -108,7 +108,309 @@
 
 ---
 
-## **שלב ב': אינטגרציה ובדיקות**  
-(יושלם בהמשך)  
+## **שלב ב': שאילתות**
+
+### 8 שאילתות
+
+#### 1. 📋 רשימת מתנדבים
+**English:** List of volunteers including name, type of volunteering, name of manager, and number of projects assigned.  
+**עברית:** הצגת מתנדבים עם שמם המלא, סוג ההתנדבות, שם המנהל ומספר הפרויקטים אליהם הם שובצו.  
+🖼️ ![Query 1](https://github.com/user-attachments/assets/d61dc736-dc5d-4c23-a9d8-39f146ea5422)
+
+```sql
+SELECT
+    v.VolunteerID,
+    v.FirstName || ' ' || v.LastName AS FullName,
+    vt.TypeName AS VolunteerType,
+    m.FirstName || ' ' || m.LastName AS ManagerName,
+    COUNT(p.ProjectID) AS NumOfProjects
+FROM Volunteer v
+JOIN VolunteerType vt ON v.VolunteerTypeID = vt.VolunteerTypeID
+JOIN Manager m ON v.ManagerID = m.ManagerID
+LEFT JOIN AssignedTo a ON v.VolunteerID = a.VolunteerID
+LEFT JOIN Project p ON a.ProjectID = p.ProjectID
+GROUP BY v.VolunteerID, v.FirstName, v.LastName, vt.TypeName, m.FirstName, m.LastName
+ORDER BY v.VolunteerID;
+```
+
+---
+
+#### 2. 🧮 מספר מתנדבים פר תחום
+**English:** Number of volunteers in each volunteer type.  
+**עברית:** כמות מתנדבים בכל סוג של התנדבות.  
+🖼️ ![Query 2](https://github.com/user-attachments/assets/d6f8fd58-e60c-465f-b7d8-b4ca729a6183)
+
+```sql
+SELECT
+    vt.TypeName AS VolunteerType,
+    COUNT(v.VolunteerID) AS VolunteerCount
+FROM Volunteer v
+JOIN VolunteerType vt ON v.VolunteerTypeID = vt.VolunteerTypeID
+GROUP BY vt.TypeName
+ORDER BY VolunteerCount DESC;
+```
+
+---
+
+#### 3. 🚫 מתנדבים ללא הכשרה
+**English:** Volunteers who never had any training and their manager's name.  
+**עברית:** הצגת מתנדבים שמעולם לא עברו הכשרה, כולל פרטי המנהל שלהם.  
+🖼️ ![Query 3](https://github.com/user-attachments/assets/69f07dd4-c1a3-4603-9d0e-315e592981a4)
+
+```sql
+SELECT
+    V.VolunteerID,
+    V.FirstName,
+    V.LastName,
+    M.FirstName || ' ' || M.LastName AS ManagerName,
+    M.Email AS ManagerEmail,
+    M.PhoneNumber AS ManagerPhoneNumber
+FROM Volunteer V
+JOIN Manager M ON V.ManagerID = M.ManagerID
+WHERE NOT EXISTS (
+    SELECT 1 FROM Trained T WHERE T.VolunteerID = V.VolunteerID
+);
+```
+
+---
+
+#### 4. 📅 הצעות להכשרה
+**English:** Volunteers who are currently assigned to open projects (projects ending in the future).  
+**עברית:** הצגת מתנדבים שובצו לפרויקטים שעדיין פעילים.  
+🖼️ ![Query 4](https://github.com/user-attachments/assets/f6548dc4-788b-49c3-b804-27482aedc6f6)
+
+```sql
+SELECT
+    v.FirstName,
+    v.LastName,
+    p.ProjectName,
+    p.EndDate
+FROM Volunteer v
+JOIN AssignedTo a ON v.VolunteerID = a.VolunteerID
+JOIN Project p ON a.ProjectID = p.ProjectID
+WHERE p.EndDate > CURRENT_DATE
+ORDER BY p.EndDate;
+```
+
+---
+
+#### 5. 🗂️ פרטי פרוייקטים
+**English:** Details about each project: manager, duration, volunteer count, and current status.  
+**עברית:** פרטים על כל פרויקט כולל שם המנהל, תיאור, תאריכים, משך, סטטוס ומספר מתנדבים.  
+🖼️ ![Query 5](https://github.com/user-attachments/assets/96c5b746-13ae-4d6c-a09d-aaab3f89571d)
+
+```sql
+SELECT
+    p.ProjectName,
+    p.Description,
+    m.FirstName || ' ' || m.LastName AS ManagerName,
+    p.StartDate,
+    p.EndDate,
+    (p.EndDate - p.StartDate) AS DurationDays,
+    CASE
+        WHEN CURRENT_DATE < p.StartDate THEN 'Not Started'
+        WHEN CURRENT_DATE BETWEEN p.StartDate AND p.EndDate THEN 'Active'
+        ELSE 'Closed'
+    END AS Status,
+    COUNT(a.VolunteerID) AS VolunteerCount
+FROM Project p
+JOIN Manager m ON p.ManagerID = m.ManagerID
+LEFT JOIN AssignedTo a ON p.ProjectID = a.ProjectID
+GROUP BY
+    p.ProjectID, p.ProjectName, p.Description, p.StartDate, p.EndDate, m.FirstName, m.LastName
+ORDER BY p.StartDate DESC;
+```
+
+---
+
+#### 6. ⏱️ שעות התנדבות חודשיות 
+**English:** Total hours volunteered per volunteer per month (based on shift durations).  
+**עברית:** חישוב שעות ההתנדבות החודשיות לפי משמרות.  
+🖼️ ![Query 6](https://github.com/user-attachments/assets/9c56faec-70d8-4bb1-8704-d3c523a98c92)
+
+```sql
+SELECT
+    v.FirstName || ' ' || v.LastName AS VolunteerName,
+    EXTRACT(YEAR FROM s.ShiftDate) AS Year,
+    EXTRACT(MONTH FROM s.ShiftDate) AS Month,
+    SUM(EXTRACT(EPOCH FROM (s.EndTime - s.StartTime)) / 3600) AS TotalHours
+FROM Volunteer v
+JOIN WorksIn w ON v.VolunteerID = w.VolunteerID
+JOIN Shift s ON w.ShiftID = s.ShiftID
+GROUP BY v.VolunteerID, Year, Month
+ORDER BY v.VolunteerID, Year, Month;
+```
+
+---
+
+#### 7. 🧠 מתנדבים עם מספר הכשרות
+**English:** Volunteers who participated in more than 2 different trainings.  
+**עברית:** מתנדבים שעברו יותר משתי הכשרות.  
+🖼️ ![Query 7](https://github.com/user-attachments/assets/f2b872d0-0484-4706-b708-a9d377ebfa52)
+
+```sql
+SELECT
+    v.VolunteerID,
+    v.FirstName || ' ' || v.LastName AS VolunteerName,
+    COUNT(t.TrainingID) AS TrainingCount
+FROM Volunteer v
+JOIN Trained t ON v.VolunteerID = t.VolunteerID
+GROUP BY v.VolunteerID, v.FirstName, v.LastName
+HAVING COUNT(t.TrainingID) > 2
+ORDER BY TrainingCount DESC;
+```
+
+---
+
+#### 8. 📚 הצעות הכשרה למתנדבים ללא הכשרה כלל 
+**English:** Suggest trainings for volunteers who never had any training, only if the training:  
+- Is today or in the future  
+- Doesn't overlap with any project assigned to the volunteer  
+
+**עברית:** הצעת הכשרות עתידיות למתנדבים שלא עברו שום הכשרה, כל עוד אין חפיפה לפרויקטים שלהם.  
+🖼️ ![Query 8](https://github.com/user-attachments/assets/b6a8f9c3-7593-4825-a94c-9909d4b76c1f)
+
+```sql
+SELECT
+    v.VolunteerID,
+    v.FirstName || ' ' || v.LastName AS VolunteerName,
+    t.TrainingID,
+    t.TrainingName,
+    t.TrainingDate
+FROM Volunteer v
+CROSS JOIN Training t
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Trained tr
+    WHERE tr.VolunteerID = v.VolunteerID
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM AssignedTo a
+    JOIN Project p ON a.ProjectID = p.ProjectID
+    WHERE a.VolunteerID = v.VolunteerID
+      AND t.TrainingDate BETWEEN p.StartDate AND p.EndDate
+)
+AND t.TrainingDate >= CURRENT_DATE
+ORDER BY v.VolunteerID, t.TrainingDate;
+```
+---
+### שאילתות DELETE
+#### 1. מחיקת מתנדבים שלא עברו אף הכשרה במשך שנה שלמה אחרונה 
+
+
+![photo_5764772063687591304_y](https://github.com/user-attachments/assets/d9e179d2-3d85-45ec-a59a-7117564571ce)
+
+#### 2. מחיקה של פרויקטים בתיאורם מופיעה המילה "Post-Surgery Assistance" 
+![photo_5764772063687591306_y](https://github.com/user-attachments/assets/5a1dcb48-83ed-4962-aa60-e73e8ef02c4a)
+
+### 3.  מחיקה של משמרות בפברואר שלא שובץ אליהן אף מתנדב 
+![photo_5764772063687591307_y](https://github.com/user-attachments/assets/bac05ff9-a022-4f32-94b8-439d61eee583)
+
+---
+### שאילתות UPDATE
+
+#### 1. הארכת פרוייקטים פתוחים ב-30 יום
+לפני העדכון:
+![עדכוןלפני1](https://github.com/user-attachments/assets/c8ce0447-09a0-44b3-8073-a36c47615e7d)
+
+לאחר העדכון:
+![עדכוןאחרי1](https://github.com/user-attachments/assets/b4d32b14-fc9c-42d8-a77f-9f7726adf744)
+
+#### 2. הוספת תגית "[CLOSED]" לשדה התיאור של פרוייקטים סגורים.
+לפני העדכון:
+![עדכוןלפני2](https://github.com/user-attachments/assets/de06c1e0-87e3-4ce6-afd0-2dad3addc210)
+
+לאחר העדכון:
+![עדכוןאחרי2](https://github.com/user-attachments/assets/2c6b24a1-d9c2-4843-8c09-efb820c0133c)
+
+#### 3. הוספת תגית "[Experienced]" לשדה הכישורים של מתנדבים שהשתתפו ביותר מ־3 פרויקטים.
+לפני העדכון:
+![עדכוןלפני3](https://github.com/user-attachments/assets/2405be3b-5b76-4058-aa67-80026b699bc7)
+
+לאחר העדכון:
+![עדכוןאחרי3](https://github.com/user-attachments/assets/ca7c9235-f238-40f1-a497-f2c8150296ca)
+
+---
+### אילוצים בטבלאות (Constraints)
+
+#### 1. אילוץ UNIQUE על טבלת Shift
+
+תיאור האילוץ:  
+הגדרנו אילוץ מסוג UNIQUE על שילוב השדות ShiftDate, StartTime, EndTime כדי למנוע מצב של משמרות כפולות באותו תאריך וזמן.
+```sql
+ALTER TABLE Shift
+ADD CONSTRAINT uniq_shift_datetime
+UNIQUE (ShiftDate, StartTime, EndTime);
+```
+
+בדיקת תקינות האילוץ (הדגמת שגיאה):
+```sql
+
+-- הכנסה תקינה
+INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate)
+VALUES (401, '09:00', '17:00', '2025-04-16');
+
+-- הכנסה סותרת את האילוץ
+INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate)
+VALUES (402, '09:00', '17:00', '2025-04-16');
+```
+
+הרצה:
+![1](https://github.com/user-attachments/assets/e0f24073-2747-4042-b3f4-73847e819ca5)
+
+
+---
+
+#### 2. אילוץ CHECK על אורך מספר טלפון בטבלת Volunteer
+
+תיאור האילוץ:  
+הוספנו אילוץ מסוג CHECK אשר מוודא שמספר הטלפון כולל לפחות 9 תווים, כדי להבטיח תקינות של נתוני יצירת קשר.
+```sql
+ALTER TABLE Volunteer
+ADD CONSTRAINT chk_phone_length
+CHECK (LENGTH(PhoneNumber) >= 9);
+```
+
+בדיקת תקינות האילוץ (הדגמת שגיאה):
+```sql
+
+
+INSERT INTO Volunteer (VolunteerID, FirstName, LastName, PhoneNumber, Email, Skill, ManagerID, VolunteerTypeID)
+VALUES (401, 'Jane', 'Smith', '12345678', 'jane.smith@email.com', 'Skills', 1, 1);
+
+```
+
+הרצה:
+![2](https://github.com/user-attachments/assets/c3ac02b1-d4e4-4029-8beb-ee0466e1e54f)
+
+---
+
+#### 3. אילוץ DEFAULT על שדה StartDate בטבלת Project
+
+תיאור האילוץ:  
+הוגדר ערך ברירת מחדל (DEFAULT) לעמודת StartDate, כך שאם לא יוזן תאריך התחלה, יוזן אוטומטית תאריך היום (CURRENT_DATE).
+```sql
+
+ALTER TABLE Project
+ALTER COLUMN StartDate
+SET DEFAULT CURRENT_DATE;
+```
+
+
+בדיקת תקינות האילוץ (הדגמה):
+```sql
+
+-- הכנסה מבלי לציין תאריך התחלה (StartDate)
+INSERT INTO Project (ProjectID, ProjectName, Description, EndDate, ManagerID)
+VALUES (401, 'Project A', 'Description A', '2025-05-01', 1);
+
+-- בדיקה שהתאריך שנקלט הוא אכן תאריך היום
+SELECT * FROM Project WHERE ProjectID = 401;
+
+```
+הרצה:
+![3](https://github.com/user-attachments/assets/b8968dc1-c03c-4301-b512-23e0e0556a5e)
+
 
 ---
