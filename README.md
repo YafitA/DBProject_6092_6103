@@ -266,6 +266,7 @@ ORDER BY TrainingCount DESC;
 **English:** Suggest trainings for volunteers who never had any training, only if the training:  
 - Is today or in the future  
 - Doesn't overlap with any project assigned to the volunteer  
+
 **עברית:** הצעת הכשרות עתידיות למתנדבים שלא עברו שום הכשרה, כל עוד אין חפיפה לפרויקטים שלהם.  
 🖼️ ![Query 8](https://github.com/user-attachments/assets/b6a8f9c3-7593-4825-a94c-9909d4b76c1f)
 
@@ -328,3 +329,6 @@ ORDER BY v.VolunteerID, t.TrainingDate;
 
 לאחר העדכון:
 ![עדכוןאחרי3](https://github.com/user-attachments/assets/07bce255-90a1-4030-9d6a-2114ba433029)
+---
+### אילוצים
+#### 1. 
