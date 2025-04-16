@@ -13,7 +13,7 @@
   - [ERD - תרשים ישויות וקשרים](#erd---תרשים-ישויות-וקשרים)  
   - [DSD - תרשים מבנה נתונים](#dsd---תרשים-מבנה-נתונים)  
   - [קבצי SQL](#קבצי-sql)  
-  - [אכלוס נתונים בשלוש שיטות](#אכלוס-נתונים-בשלוש-שיטות)  
+  - [אכלוס נתונים בשלוש שיטות](#יצירת-נתונים-בשלוש-שיטות)  
   - [גיבוי ושחזור](#גיבוי-ושחזור)  
 - [שלב ב': שאילתות](#שלב-ב-שאילתות)  
 
@@ -296,39 +296,121 @@ ORDER BY v.VolunteerID, t.TrainingDate;
 ```
 ---
 ### שאילתות DELETE
-#### 1. 
+#### 1. מחיקת מתנדבים שלא עברו אף הכשרה במשך שנה שלמה אחרונה 
+
 
 ![photo_5764772063687591304_y](https://github.com/user-attachments/assets/d9e179d2-3d85-45ec-a59a-7117564571ce)
 
-#### 2. 
+#### 2. מחיקה של פרויקטים בתיאורם מופיעה המילה "Post-Surgery Assistance" 
 ![photo_5764772063687591306_y](https://github.com/user-attachments/assets/5a1dcb48-83ed-4962-aa60-e73e8ef02c4a)
 
-### 3. 
+### 3.  מחיקה של משמרות בפברואר שלא שובץ אליהן אף מתנדב 
 ![photo_5764772063687591307_y](https://github.com/user-attachments/assets/bac05ff9-a022-4f32-94b8-439d61eee583)
 
 ---
 ### שאילתות UPDATE
 
-#### 1. עדכון
+#### 1. הארכת פרוייקטים פתוחים ב-30 יום
 לפני העדכון:
 ![עדכוןלפני1](https://github.com/user-attachments/assets/c8ce0447-09a0-44b3-8073-a36c47615e7d)
 
 לאחר העדכון:
 ![עדכוןאחרי1](https://github.com/user-attachments/assets/b4d32b14-fc9c-42d8-a77f-9f7726adf744)
 
-#### 2. עדכון
+#### 2. הוספת תגית "[CLOSED]" לשדה התיאור של פרוייקטים סגורים.
 לפני העדכון:
 ![עדכוןלפני2](https://github.com/user-attachments/assets/de06c1e0-87e3-4ce6-afd0-2dad3addc210)
 
 לאחר העדכון:
 ![עדכוןאחרי2](https://github.com/user-attachments/assets/2c6b24a1-d9c2-4843-8c09-efb820c0133c)
 
-#### 1. עדכון
+#### 3. הוספת תגית "[Experienced]" לשדה הכישורים של מתנדבים שהשתתפו ביותר מ־3 פרויקטים.
 לפני העדכון:
 ![עדכוןלפני3](https://github.com/user-attachments/assets/2405be3b-5b76-4058-aa67-80026b699bc7)
 
 לאחר העדכון:
-![עדכוןאחרי3](https://github.com/user-attachments/assets/07bce255-90a1-4030-9d6a-2114ba433029)
+![עדכוןאחרי3](https://github.com/user-attachments/assets/ca7c9235-f238-40f1-a497-f2c8150296ca)
+
 ---
-### אילוצים
-#### 1. 
+### אילוצים בטבלאות (Constraints)
+
+#### 1. אילוץ UNIQUE על טבלת Shift
+
+תיאור האילוץ:  
+הגדרנו אילוץ מסוג UNIQUE על שילוב השדות ShiftDate, StartTime, EndTime כדי למנוע מצב של משמרות כפולות באותו תאריך וזמן.
+```sql
+ALTER TABLE Shift
+ADD CONSTRAINT uniq_shift_datetime
+UNIQUE (ShiftDate, StartTime, EndTime);
+```
+
+בדיקת תקינות האילוץ (הדגמת שגיאה):
+```sql
+
+-- הכנסה תקינה
+INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate)
+VALUES (401, '09:00', '17:00', '2025-04-16');
+
+-- הכנסה סותרת את האילוץ
+INSERT INTO Shift (ShiftID, StartTime, EndTime, ShiftDate)
+VALUES (402, '09:00', '17:00', '2025-04-16');
+```
+
+הרצה:
+![1](https://github.com/user-attachments/assets/e0f24073-2747-4042-b3f4-73847e819ca5)
+
+
+---
+
+#### 2. אילוץ CHECK על אורך מספר טלפון בטבלת Volunteer
+
+תיאור האילוץ:  
+הוספנו אילוץ מסוג CHECK אשר מוודא שמספר הטלפון כולל לפחות 9 תווים, כדי להבטיח תקינות של נתוני יצירת קשר.
+```sql
+ALTER TABLE Volunteer
+ADD CONSTRAINT chk_phone_length
+CHECK (LENGTH(PhoneNumber) >= 9);
+```
+
+בדיקת תקינות האילוץ (הדגמת שגיאה):
+```sql
+
+
+INSERT INTO Volunteer (VolunteerID, FirstName, LastName, PhoneNumber, Email, Skill, ManagerID, VolunteerTypeID)
+VALUES (401, 'Jane', 'Smith', '12345678', 'jane.smith@email.com', 'Skills', 1, 1);
+
+```
+
+הרצה:
+![2](https://github.com/user-attachments/assets/c3ac02b1-d4e4-4029-8beb-ee0466e1e54f)
+
+---
+
+#### 3. אילוץ DEFAULT על שדה StartDate בטבלת Project
+
+תיאור האילוץ:  
+הוגדר ערך ברירת מחדל (DEFAULT) לעמודת StartDate, כך שאם לא יוזן תאריך התחלה, יוזן אוטומטית תאריך היום (CURRENT_DATE).
+```sql
+
+ALTER TABLE Project
+ALTER COLUMN StartDate
+SET DEFAULT CURRENT_DATE;
+```
+
+
+בדיקת תקינות האילוץ (הדגמה):
+```sql
+
+-- הכנסה מבלי לציין תאריך התחלה (StartDate)
+INSERT INTO Project (ProjectID, ProjectName, Description, EndDate, ManagerID)
+VALUES (401, 'Project A', 'Description A', '2025-05-01', 1);
+
+-- בדיקה שהתאריך שנקלט הוא אכן תאריך היום
+SELECT * FROM Project WHERE ProjectID = 401;
+
+```
+הרצה:
+![3](https://github.com/user-attachments/assets/b8968dc1-c03c-4301-b512-23e0e0556a5e)
+
+
+---
