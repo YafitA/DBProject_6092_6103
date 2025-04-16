@@ -109,18 +109,10 @@
 ---
 
 ## **שלב ב': שאילתות**
-# 📊 SQL Queries - Hospital Volunteer System (מתנדבים בבית חולים)
 
-מסמך זה כולל 8 שאילתות SQL שנכתבו כחלק מפרויקט לניהול מערכת מתנדבים בבית חולים.  
-כל שאילתה כוללת:  
-📝 הסבר באנגלית  
-🗣️ תרגום לעברית  
-💻 השאילתא עצמה  
-🖼️ צילום מסך של תוצאת השאילתא
+### 8 שאילתות
 
----
-
-## 1. 📋 List of Volunteers and Project Assignments  
+#### 1. 📋 רשימת מתנדבים
 **English:** List of volunteers including name, type of volunteering, name of manager, and number of projects assigned.  
 **עברית:** הצגת מתנדבים עם שמם המלא, סוג ההתנדבות, שם המנהל ומספר הפרויקטים אליהם הם שובצו.  
 🖼️ ![Query 1](https://github.com/user-attachments/assets/d61dc736-dc5d-4c23-a9d8-39f146ea5422)
@@ -143,7 +135,7 @@ ORDER BY v.VolunteerID;
 
 ---
 
-## 2. 🧮 Number of Volunteers per Type  
+#### 2. 🧮 מספר מתנדבים פר תחום
 **English:** Number of volunteers in each volunteer type.  
 **עברית:** כמות מתנדבים בכל סוג של התנדבות.  
 🖼️ ![Query 2](https://github.com/user-attachments/assets/d6f8fd58-e60c-465f-b7d8-b4ca729a6183)
@@ -160,7 +152,7 @@ ORDER BY VolunteerCount DESC;
 
 ---
 
-## 3. 🚫 Volunteers Without Training  
+#### 3. 🚫 מתנדבים ללא הכשרה
 **English:** Volunteers who never had any training and their manager's name.  
 **עברית:** הצגת מתנדבים שמעולם לא עברו הכשרה, כולל פרטי המנהל שלהם.  
 🖼️ ![Query 3](https://github.com/user-attachments/assets/69f07dd4-c1a3-4603-9d0e-315e592981a4)
@@ -182,7 +174,7 @@ WHERE NOT EXISTS (
 
 ---
 
-## 4. 📅 Volunteers Assigned to Open Projects  
+#### 4. 📅 הצעות להכשרה
 **English:** Volunteers who are currently assigned to open projects (projects ending in the future).  
 **עברית:** הצגת מתנדבים שובצו לפרויקטים שעדיין פעילים.  
 🖼️ ![Query 4](https://github.com/user-attachments/assets/f6548dc4-788b-49c3-b804-27482aedc6f6)
@@ -202,7 +194,7 @@ ORDER BY p.EndDate;
 
 ---
 
-## 5. 🗂️ Project Summary with Status  
+#### 5. 🗂️ פרטי פרוייקטים
 **English:** Details about each project: manager, duration, volunteer count, and current status.  
 **עברית:** פרטים על כל פרויקט כולל שם המנהל, תיאור, תאריכים, משך, סטטוס ומספר מתנדבים.  
 🖼️ ![Query 5](https://github.com/user-attachments/assets/96c5b746-13ae-4d6c-a09d-aaab3f89571d)
@@ -231,7 +223,7 @@ ORDER BY p.StartDate DESC;
 
 ---
 
-## 6. ⏱️ Monthly Volunteer Hours  
+#### 6. ⏱️ שעות התנדבות חודשיות 
 **English:** Total hours volunteered per volunteer per month (based on shift durations).  
 **עברית:** חישוב שעות ההתנדבות החודשיות לפי משמרות.  
 🖼️ ![Query 6](https://github.com/user-attachments/assets/9c56faec-70d8-4bb1-8704-d3c523a98c92)
@@ -251,7 +243,7 @@ ORDER BY v.VolunteerID, Year, Month;
 
 ---
 
-## 7. 🧠 Volunteers with Multiple Trainings  
+#### 7. 🧠 מתנדבים עם מספר הכשרות
 **English:** Volunteers who participated in more than 2 different trainings.  
 **עברית:** מתנדבים שעברו יותר משתי הכשרות.  
 🖼️ ![Query 7](https://github.com/user-attachments/assets/f2b872d0-0484-4706-b708-a9d377ebfa52)
@@ -270,7 +262,7 @@ ORDER BY TrainingCount DESC;
 
 ---
 
-## 8. 📚 Suggested Trainings for Untrained Volunteers  
+#### 8. 📚 הצעות הכשרה למתנדבים ללא הכשרה כלל 
 **English:** Suggest trainings for volunteers who never had any training, only if the training:  
 - Is today or in the future  
 - Doesn't overlap with any project assigned to the volunteer  
@@ -301,8 +293,15 @@ AND NOT EXISTS (
 AND t.TrainingDate >= CURRENT_DATE
 ORDER BY v.VolunteerID, t.TrainingDate;
 ```
+### שאילתות UPDATE
 
----
+### שאילתות DELETE
+#### 1. 
 
-✨ בהצלחה בפרויקט!
+![photo_5764772063687591304_y](https://github.com/user-attachments/assets/d9e179d2-3d85-45ec-a59a-7117564571ce)
 
+#### 2. 
+![photo_5764772063687591306_y](https://github.com/user-attachments/assets/5a1dcb48-83ed-4962-aa60-e73e8ef02c4a)
+
+### 3. 
+![photo_5764772063687591307_y](https://github.com/user-attachments/assets/bac05ff9-a022-4f32-94b8-439d61eee583)
