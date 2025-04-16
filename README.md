@@ -19,7 +19,8 @@
   - [8 שאילתות SELECT](#8-שאילתות-SELECT)
   - [3 שאילתות DELETE](#3-שאילתות-DELETE)
   - [3 שאילתות UPDATE](#3-שאילתות-UPDATE)
-  - [אילוצים בטבלאות (Constraints)](#אילוצים-בטבלאות-(Constraints))
+  - [אילוצים בטבלאות (Constraints)](#אילוצים-בטבלאות-constraints)
+
 
 
 ---
