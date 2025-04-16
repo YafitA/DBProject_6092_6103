@@ -76,12 +76,25 @@ SELECT
     v.FirstName || ' ' || v.LastName AS VolunteerName,
     EXTRACT(YEAR FROM s.ShiftDate) AS Year,
     EXTRACT(MONTH FROM s.ShiftDate) AS Month,
-    SUM(EXTRACT(EPOCH FROM (s.EndTime - s.StartTime)) / 3600) AS TotalHours
+    ROUND(
+        SUM(
+            EXTRACT(EPOCH FROM (
+                CASE
+                    WHEN s.EndTime >= s.StartTime THEN
+                        (s.ShiftDate + s.EndTime) - (s.ShiftDate + s.StartTime)
+                    ELSE
+                        (s.ShiftDate + INTERVAL '1 day' + s.EndTime) - (s.ShiftDate + s.StartTime)
+                END
+            )) / 3600
+        ),
+        2
+    ) AS TotalHours
 FROM Volunteer v
 JOIN WorksIn w ON v.VolunteerID = w.VolunteerID
 JOIN Shift s ON w.ShiftID = s.ShiftID
 GROUP BY v.VolunteerID, Year, Month
 ORDER BY v.VolunteerID, Year, Month;
+
 
 /* 7. Volunteers who participated in more than 2 different trainings */
 SELECT

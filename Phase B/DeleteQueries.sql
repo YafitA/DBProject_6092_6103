@@ -1,25 +1,26 @@
-/*We delete volunteers who have not been assigned to any projects in the past year.
-A LEFT JOIN is used to include even those who were never assigned at all.
-Filtering is done by year using EXTRACT(YEAR FROM ...).
-An IN clause with a subquery is used to identify the relevant volunteers.*/
+/*Deletion of volunteers who have not attended any training sessions in the past year (based on training dates)*/
 DELETE FROM Volunteer
 WHERE VolunteerID IN (
     SELECT V.VolunteerID
     FROM Volunteer V
-    LEFT JOIN AssignedTo A ON V.VolunteerID = A.VolunteerID
-    LEFT JOIN Project P ON A.ProjectID = P.ProjectID
-    WHERE A.ProjectID IS NULL
-       OR EXTRACT(YEAR FROM P.EndDate) < EXTRACT(YEAR FROM CURRENT_DATE)
-);
+    LEFT JOIN Trained T ON V.VolunteerID = T.VolunteerID
+    LEFT JOIN Training TR ON T.TrainingID = TR.TrainingID
+    GROUP BY V.VolunteerID
+    HAVING MAX(TR.TrainingDate) IS NULL
+        OR MAX(TR.TrainingDate) < (CURRENT_DATE - INTERVAL '1 year')
+)
+RETURNING *;
 
 
 
-/*The query deletes all trainings that are scheduled in the year 2024
-uses EXTRACT(YEAR FROM date) to filter dates by year.
-Suitable for an interface that needs to clean outdated data (such as a training management GUI).*/
-DELETE FROM Training
-WHERE EXTRACT(YEAR FROM TrainingDate) = 2024;
-
+/*Deletes projects where the description contains the phrase "Post-Surgery Assistance"*/
+DELETE FROM Project
+WHERE ProjectID IN (
+    SELECT p.ProjectID
+    FROM Project p
+    WHERE p.Description LIKE '%Post-Surgery Assistance%'
+)
+RETURNING *;
 
 
 /*Deletion of shifts in February that had no volunteers assigned to them.
@@ -34,5 +35,6 @@ WHERE ShiftID IN (
     WHERE EXTRACT(MONTH FROM S.ShiftDate) = 2
     GROUP BY S.ShiftID
     HAVING COUNT(W.VolunteerID) = 0
-);
+)
+RETURNING *;
 
