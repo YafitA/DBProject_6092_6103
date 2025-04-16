@@ -15,7 +15,13 @@
   - [קבצי SQL](#קבצי-sql)  
   - [אכלוס נתונים בשלוש שיטות](#יצירת-נתונים-בשלוש-שיטות)  
   - [גיבוי ושחזור](#גיבוי-ושחזור)  
-- [שלב ב': שאילתות](#שלב-ב-שאילתות)  
+- [שלב ב': שאילתות](#שלב-ב-שאילתות)
+  - [8 שאילתות SELECT](#8-שאילתות-SELECT)
+  - [3 שאילתות DELETE](#3-שאילתות-DELETE)
+  - [3 שאילתות UPDATE](#3-שאילתות-UPDATE)
+  - [אילוצים בטבלאות (Constraints)](#אילוצים-בטבלאות-constraints)
+
+
 
 ---
 
@@ -110,7 +116,7 @@
 
 ## **שלב ב': שאילתות**
 
-### 8 שאילתות
+### 8 שאילתות SELECT
 
 #### 1. 📋 רשימת מתנדבים
 **English:** List of volunteers including name, type of volunteering, name of manager, and number of projects assigned.  
@@ -295,7 +301,7 @@ AND t.TrainingDate >= CURRENT_DATE
 ORDER BY v.VolunteerID, t.TrainingDate;
 ```
 ---
-### שאילתות DELETE
+### 3 שאילתות DELETE
 #### 1. מחיקת מתנדבים שלא עברו אף הכשרה במשך שנה שלמה אחרונה 
 
 
@@ -308,7 +314,7 @@ ORDER BY v.VolunteerID, t.TrainingDate;
 ![photo_5764772063687591307_y](https://github.com/user-attachments/assets/bac05ff9-a022-4f32-94b8-439d61eee583)
 
 ---
-### שאילתות UPDATE
+### 3 שאילתות UPDATE
 
 #### 1. הארכת פרוייקטים פתוחים ב-30 יום
 לפני העדכון:
