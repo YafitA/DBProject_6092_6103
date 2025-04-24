@@ -5,6 +5,12 @@
 -- Start a transaction
 BEGIN;
 
+-- Show the data before the update
+SELECT VolunteerID, FirstName, LastName
+FROM Volunteer
+WHERE VolunteerID = 1;
+
+
 -- Update the name of the volunteer with VolunteerID = 1
 UPDATE Volunteer
 SET FirstName = 'Yafit'
