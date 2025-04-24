@@ -20,7 +20,9 @@
   - [3 שאילתות DELETE](#3-שאילתות-DELETE)
   - [3 שאילתות UPDATE](#3-שאילתות-UPDATE)
   - [אילוצים בטבלאות (Constraints)](#אילוצים-בטבלאות-constraints)
-  - [ביצוע rollback וcommit](#ביצוע-rollback-וcommit)
+  - [הדגמת ROLLBACK](#הדגמת-ROLLBACK)
+  - [הדגמת COMMIT](#הדגמת-COMMIT)
+  
 
 
 
@@ -431,6 +433,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
 
 #### 3. ביצוע פקודת ROLLBACK והצגת מסד נתונים (העדכון הוסר)
 ![image](https://github.com/user-attachments/assets/fa01eab8-57b1-4f4e-8278-9b925ae542c8)
+---
 
 
 
