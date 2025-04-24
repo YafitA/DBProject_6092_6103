@@ -20,6 +20,7 @@
   - [3 שאילתות DELETE](#3-שאילתות-DELETE)
   - [3 שאילתות UPDATE](#3-שאילתות-UPDATE)
   - [אילוצים בטבלאות (Constraints)](#אילוצים-בטבלאות-constraints)
+  - [ביצוע rollback וcommit](#ביצוע-rollback-וcommit)
 
 
 
@@ -394,7 +395,8 @@ VALUES (401, 'Jane', 'Smith', '12345678', 'jane.smith@email.com', 'Skills', 1, 1
 
 #### 3. אילוץ DEFAULT על שדה StartDate בטבלת Project
 
-תיאור האילוץ:  
+תיאור האילוץ:  ![image](https://github.com/user-attachments/assets/03f60f10-2796-462c-a57a-c991ba2776f9)
+
 הוגדר ערך ברירת מחדל (DEFAULT) לעמודת StartDate, כך שאם לא יוזן תאריך התחלה, יוזן אוטומטית תאריך היום (CURRENT_DATE).
 ```sql
 
@@ -420,3 +422,25 @@ SELECT * FROM Project WHERE ProjectID = 401;
 
 
 ---
+### הדגמת ROLLBACK
+#### 1. פקודת BEGIN והצגת המסד נתונים לפני עדכון
+![image](https://github.com/user-attachments/assets/75111493-99b3-454a-8e9f-1c0fd78d7ccf)
+
+#### 2. עדכון מסד הנתונים והצגתו
+![image](https://github.com/user-attachments/assets/57a9b7e0-9074-46dc-ba5f-a9c0c46ddc81)
+
+#### 3. ביצוע פקודת ROLLBACK והצגת מסד נתונים (העדכון הוסר)
+![image](https://github.com/user-attachments/assets/fa01eab8-57b1-4f4e-8278-9b925ae542c8)
+
+
+
+### הדגמת COMMIT
+#### 1. עדכון מסד הנתונים והצגתו
+![image](https://github.com/user-attachments/assets/c2bf9528-4827-4188-8d48-2237c4c291b1)
+
+#### 2. ביצוע פקודת ROLLBACK והצגת מסד נתונים (העדכון נכנס לתוקף)
+![image](https://github.com/user-attachments/assets/1297ce44-0b30-4121-87ca-66de76ab64fc)
+
+
+
+
