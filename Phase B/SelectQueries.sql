@@ -28,8 +28,8 @@ SELECT
     V.VolunteerID,
     V.FirstName,
     V.LastName,
-    M.FirstName || ' ' || M.LastName AS ManagerName
-    M.Email AS ManagerEmail
+    M.FirstName || ' ' || M.LastName AS ManagerName,
+    M.Email AS ManagerEmail,
     M.PhoneNumber AS ManagerPhoneNumber
 FROM Volunteer V
 JOIN Manager M ON V.ManagerID = M.ManagerID
