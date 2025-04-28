@@ -141,3 +141,20 @@ AND t.TrainingDate >= CURRENT_DATE
 /* Sort by volunteer and training date */
 ORDER BY v.VolunteerID, t.TrainingDate;
 
+
+
+/*
+9.Retrieves volunteers who completed training in the last 6 months, ordered by Volunteer ID.
+*/
+SELECT
+    V.VolunteerID,
+    V.FirstName,
+    V.LastName,
+    V.Email,
+    T.TrainingName,
+    T.TrainingDate
+FROM Volunteer V
+JOIN Trained TR ON V.VolunteerID = TR.VolunteerID
+JOIN Training T ON TR.TrainingID = T.TrainingID
+WHERE T.TrainingDate >= CURRENT_DATE - INTERVAL '6 MONTH' AND  T.TrainingDate <= CURRENT_DATE
+ORDER BY T.TrainingDate DESC;
