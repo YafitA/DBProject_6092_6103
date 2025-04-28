@@ -397,8 +397,7 @@ VALUES (401, 'Jane', 'Smith', '12345678', 'jane.smith@email.com', 'Skills', 1, 1
 
 #### 3. אילוץ DEFAULT על שדה StartDate בטבלת Project
 
-תיאור האילוץ:  ![image](https://github.com/user-attachments/assets/03f60f10-2796-462c-a57a-c991ba2776f9)
-
+תיאור האילוץ:  
 הוגדר ערך ברירת מחדל (DEFAULT) לעמודת StartDate, כך שאם לא יוזן תאריך התחלה, יוזן אוטומטית תאריך היום (CURRENT_DATE).
 ```sql
 
