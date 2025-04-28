@@ -183,7 +183,7 @@ WHERE NOT EXISTS (
 
 ---
 
-#### 4. 📅 הצעות להכשרה
+#### 4. 📅 מתנדבים בפרוייקטים פתוחים
 **English:** Volunteers who are currently assigned to open projects (projects ending in the future).  
 **עברית:** הצגת מתנדבים שובצו לפרויקטים שעדיין פעילים.  
 🖼️ ![Query 4](https://github.com/user-attachments/assets/f6548dc4-788b-49c3-b804-27482aedc6f6)
