@@ -22,6 +22,8 @@
   - [אילוצים בטבלאות (Constraints)](#אילוצים-בטבלאות-constraints)
   - [הדגמת ROLLBACK](#הדגמת-ROLLBACK)
   - [הדגמת COMMIT](#הדגמת-COMMIT)
+- [שלב ג': אינטגרציה ומבטים](#שלב-ג':-אינטגרציה-ומבטים)
+
   
 
 
@@ -443,6 +445,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
 #### 2. ביצוע פקודת ROLLBACK והצגת מסד נתונים (העדכון נכנס לתוקף)
 ![image](https://github.com/user-attachments/assets/1297ce44-0b30-4121-87ca-66de76ab64fc)
 
-
+---
+## שלב ג': אינטגרציה ומבטים
 
 
