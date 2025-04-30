@@ -315,7 +315,7 @@ ORDER BY v.VolunteerID, t.TrainingDate;
 #### 2. מחיקה של פרויקטים בתיאורם מופיעה המילה "Post-Surgery Assistance" 
 ![photo_5764772063687591306_y](https://github.com/user-attachments/assets/5a1dcb48-83ed-4962-aa60-e73e8ef02c4a)
 
-### 3.  מחיקה של משמרות בפברואר שלא שובץ אליהן אף מתנדב 
+#### 3.  מחיקה של משמרות בפברואר שלא שובץ אליהן אף מתנדב 
 ![photo_5764772063687591307_y](https://github.com/user-attachments/assets/bac05ff9-a022-4f32-94b8-439d61eee583)
 
 ---
