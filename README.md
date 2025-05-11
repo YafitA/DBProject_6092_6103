@@ -447,7 +447,8 @@ SELECT * FROM Project WHERE ProjectID = 401;
 
 ---
 ## שלב ג': אינטגרציה ומבטים
-<div dir="rtl">
+<div style="direction: rtl; text-align: right">
+
 ### אלגוריתם להנדסה לאחור: מטבלאות ל־DSD ול־ERD
 
 #### שלב 1: ניתוח טבלאות
