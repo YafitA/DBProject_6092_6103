@@ -23,6 +23,10 @@
   - [הדגמת ROLLBACK](#הדגמת-ROLLBACK)
   - [הדגמת COMMIT](#הדגמת-COMMIT)
 - [שלב ג': אינטגרציה ומבטים](#שלב-ג-אינטגרציה-ומבטים)
+  - [אלגוריתם הינדוס לאחור: מטבלאות ל־DSD ול־ERD](#אלגוריתם-הינדוס-לאחור-מטבלאות-ל־dsd-ול־erd)
+    - [שלב א: ניתוח טבלאות](#שלב-א-ניתוח-טבלאות)
+    - [שלב ב: יצירת-dsd](#שלב-ב-יצירת-dsd)
+    - [שלב ג: המרה-ל־erd](#שלב-ג-המרה-ל־erd)
 
   
 
@@ -447,7 +451,8 @@ SELECT * FROM Project WHERE ProjectID = 401;
 
 ---
 ## שלב ג': אינטגרציה ומבטים
-### אלגוריתם להנדסה לאחור: מטבלאות ל־DSD ול־ERD
+
+### אלגוריתם הינדוס לאחור: מטבלאות ל־DSD ול־ERD
 
 #### שלב א: ניתוח טבלאות
 
@@ -500,5 +505,13 @@ SELECT * FROM Project WHERE ProjectID = 401;
 ### תרשים ERD של האגף החדש
 
 ![image](https://github.com/user-attachments/assets/c9991de4-745b-4e4d-9046-0985aa5402c0)
+
+### תרשים ERD משותף
+
+![image (1)](https://github.com/user-attachments/assets/e05f96d2-ca3e-4560-851f-e489a7e3d2f6)
+
+### תרשים DSD לאחר אינטגרציה
+
+![image (2)](https://github.com/user-attachments/assets/baf6dd2c-2b63-425d-8cc8-9c9045e83a64)
 
 
