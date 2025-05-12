@@ -554,7 +554,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
   מאפשר לדעת אילו מתנדבים מעורבים באילו תוכניות ובאילו מטופלים.
 
 ז. **שינוי שמות טבלאות ושדות לצורך אחידות ובהירות:**  
-  שונו שמות של מספר טבלאות לשמות ברורים ואחידים:
+  שונו שמות של מספר טבלאות ומספר שדות לשמות ברורים ואחידים:
   - `m_record` → `MedicalRecord`
   - `m_equipment` → `MedicalEquipment`
   - `treat_plan` → `TreatmentPlan`
@@ -562,13 +562,10 @@ SELECT * FROM Project WHERE ProjectID = 401;
   - `Trained` → `VolunteerTraining`
   - `AssignedTo` → `VolunteerProject`
   - `use` → `use_equipment`
-  שונו שמות של מספר לשדות ברורים ואחידים - לדוגמא:
-
-  - `equip_id` → `equipment_id`
-  - `patientid` → `patient_id`
+  - `date` → `appointment_date`
   - `family_s` → `family_status`
   - `patientid` → `patient_id`
-  - `date` → `appointment_date`
+  
 
 ---
 
