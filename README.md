@@ -23,10 +23,16 @@
   - [הדגמת ROLLBACK](#הדגמת-ROLLBACK)
   - [הדגמת COMMIT](#הדגמת-COMMIT)
 - [שלב ג': אינטגרציה ומבטים](#שלב-ג-אינטגרציה-ומבטים)
-  - [אלגוריתם הינדוס לאחור: מטבלאות ל־DSD ול־ERD](#אלגוריתם-הינדוס-לאחור-מטבלאות-ל־dsd-ול־erd)
+  - [אלגוריתם הינדוס לאחור](#אלגוריתם-הינדוס-לאחור)
     - [שלב א: ניתוח טבלאות](#שלב-א-ניתוח-טבלאות)
     - [שלב ב: יצירת-dsd](#שלב-ב-יצירת-dsd)
     - [שלב ג: המרה-ל־erd](#שלב-ג-המרה-ל־erd)
+  - [תרשים DSD של האגף החדש](#תרשים-dsd-של-האגף-החדש)
+  - [תרשים ERD של האגף החדש](#תרשים-erd-של-האגף-החדש)
+  - [תרשים ERD לאחר אינטגרציה](#תרשים-erd-לאחר-אינטגרציה)
+  - [תרשים DSD לאחר אינטגרציה](#תרשים-dsd-לאחר-אינטגרציה)
+  - [החלטות עיצוב באינטגרציה](#החלטות-עיצוב-באינטגרציה)
+  - [מבטים](#מבטים)
 
   
 
@@ -452,7 +458,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
 ---
 ## שלב ג': אינטגרציה ומבטים
 
-### אלגוריתם הינדוס לאחור: מטבלאות ל־DSD ול־ERD
+### אלגוריתם הינדוס לאחור
 
 #### שלב א: ניתוח טבלאות
 
@@ -497,21 +503,188 @@ SELECT * FROM Project WHERE ProjectID = 401;
 ו. זיהוי ישות חלשה (Weak Entity):  
 - ישות ללא מפתח ראשי עצמאי, התלויה בישות אחרת (לרוב באמצעות FK כחלק מהמפתח הראשי).  
 - מיוצגת במלבן כפול, עם קשר מזהה והשתתפות מלאה בקשר.
-
+---
 
 ### תרשים DSD של האגף החדש
 ![imageDSD רקישנ](https://github.com/user-attachments/assets/802af66e-a319-43bb-98ec-29827616e06d)
 
 ### תרשים ERD של האגף החדש
 
-![image](https://github.com/user-attachments/assets/c9991de4-745b-4e4d-9046-0985aa5402c0)
+![imageDSDNON](https://github.com/user-attachments/assets/9724f28b-b3f4-4a52-9050-b84f95b569cd)
+---
 
-### תרשים ERD משותף
+### תרשים ERD לאחר האינטגרציה
 
-![image (1)](https://github.com/user-attachments/assets/e05f96d2-ca3e-4560-851f-e489a7e3d2f6)
+![ERDDDDDDDDDDDDDDDDDD](https://github.com/user-attachments/assets/fdb93739-0c0d-40d5-a2c5-dae11e0e6690)
 
 ### תרשים DSD לאחר אינטגרציה
 
-![image (2)](https://github.com/user-attachments/assets/baf6dd2c-2b63-425d-8cc8-9c9045e83a64)
+![DSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS](https://github.com/user-attachments/assets/fd65ef3d-c382-47bb-b006-7461610e9165)
 
+
+---
+### החלטות עיצוב באינטגרציה
+בשלב האינטגרציה של בסיס הנתונים, בוצעו מספר החלטות מבניות מהותיות שנועדו לפשט את המודל, למנוע כפילויות, ולוודא עקביות לוגית בין הישויות. להלן פירוט ההחלטות המרכזיות:
+
+א. **טבלת־על Person:**  
+  נוצרה טבלה חדשה בשם `Person` הכוללת את כל המידע האישי הבסיסי המשותף למנהלים, מתנדבים, מטופלים ועובדים.  
+  שדות לדוגמה: `FirstName`, `LastName`, `email`, `phone`, `address`, `birthday`, `gender`.  
+  כל ישות המקושרת לאדם משתמשת ב־`Person` כבסיס ומתחברת אליו בעזרת מפתח זר.
+
+ב. **מיזוג Manager ו־Staff_Member ל־Worker:**  
+  נוצרה ישות אחת בשם `Worker` הכוללת את כל העובדים, כאשר תפקידו של כל עובד נשמר בשדה `Role`.  
+  לדוגמה: מנהל מוגדר כעובד עם `Role = 'Manager'`.  
+  ה־`W_id` הוא גם מפתח ראשי וגם מפתח זר ל־`Person`.  
+  כל האילוצים והקשרים שכוונו ל־`Manager` ו־`Staff_Member` עודכנו שיפנו ל־`Worker`.
+
+ג. **הסרת כפילויות ושמירה על עקרון נורמליזציה:**  
+  הוסרו עמודות כפולות של מידע אישי (שם, טלפון, אימייל וכו') מהטבלאות `Volunteer`, `Patient` ו־`Staff_Member`, וכל המידע הזה נשמר מעתה בטבלת `Person`.  
+  נעשתה התאמה של מפתחות זרים בהתאם.
+
+ד. **שדרוג טבלת רשומות רפואיות (`MedicalRecord`):**  
+  נוספה עמודת מפתח חדש `RecordID` מסוג `SERIAL`.  
+  הוגדר מפתח ראשי משולב: `(RecordID, patient_id)` יחד עם אילוץ ייחודי על `patient_id` כדי למנוע ריבוי רשומות עבור אותו מטופל.
+
+ה. **הפיכת `Appointment` מיישות חלשה לקשר ישיר:**  
+  במקום שתהיה ישות נפרדת, `Appointment` הפכה לקשר בין `Patient` ל־`Worker` עם מפתח זר לכל אחת מהטבלאות.  
+  זה מייצג בצורה נכונה יותר את העובדה שמדובר באירוע המתרחש בין שני גורמים קיימים.
+
+ו. **יצירת קשר בין מתנדבים לתוכניות טיפול (`VolunteerInTreatPlan`):**  
+  נוצר קשר חדש שמתעד את הקשר בין מתנדבים לתוכניות טיפול של מטופלים.  
+  הקשר כולל שלושה שדות כמפתח ראשי: `VolunteerID`, `TreatType`, `PatientID`.  
+  מאפשר לדעת אילו מתנדבים מעורבים באילו תוכניות ובאילו מטופלים.
+
+ז. **שינוי שמות טבלאות ושדות לצורך אחידות ובהירות:**  
+  שונו שמות של מספר טבלאות ומספר שדות לשמות ברורים ואחידים:
+  - `m_record` → `MedicalRecord`
+  - `m_equipment` → `MedicalEquipment`
+  - `treat_plan` → `TreatmentPlan`
+  - `WorksIn` → `VolunteerShift`
+  - `Trained` → `VolunteerTraining`
+  - `AssignedTo` → `VolunteerProject`
+  - `use` → `use_equipment`
+  - `date` → `appointment_date`
+  - `family_s` → `family_status`
+  - `patientid` → `patient_id`
+  
+
+---
+
+### **מבט ראשון - מחלקת מתנדבים**
+ ```sql
+CREATE VIEW VolunteerFullSummary AS
+SELECT 
+    v.volunteer_id,
+    CONCAT(p.first_name, ' ', p.last_name) AS volunteer_name,
+    p.phone_number,
+    v.skill,
+    CONCAT(mp.first_name, ' ', mp.last_name) AS manager_name,
+    COUNT(DISTINCT vt.training_id) AS training_count,
+    COUNT(DISTINCT vp.project_id) AS project_count,
+    COUNT(DISTINCT vtp.patient_id) AS treatment_plan_count
+FROM volunteer v
+JOIN person p ON v.volunteer_id = p.id
+LEFT JOIN worker m ON v.manager_id = m.worker_id
+LEFT JOIN person mp ON m.worker_id = mp.id
+LEFT JOIN volunteerTraining vt ON v.volunteer_id = vt.volunteer_id
+LEFT JOIN volunteerProject vp ON v.volunteer_id = vp.volunteer_id
+LEFT JOIN volunteerInTreatPlan vtp ON v.volunteer_id = vtp.volunteer_id
+GROUP BY v.volunteer_id, volunteer_name, p.phone_number, p.email_address, v.skill, manager_name;
+``` 
+מבט שמציג את סיכום כל מתנדב כולל פרטיו שם המנהל, כישורים, וספירות של הכשרות, פרויקטים ותוכניות שיקום. 
+
+הרצה:
+![image](https://github.com/user-attachments/assets/094bfe8a-1516-40a9-8df8-0f4c8c4d4aab)
+
+
+#### **שאילתא ראשונה**
+```sql
+SELECT 
+    volunteer_id,
+    volunteer_name,
+    phone_number,
+    manager_name
+FROM VolunteerFullSummary
+WHERE training_count = 0;
+``` 
+מציג את כל המתנדבים שלא עברו אף הכשרה, כולל פרטי קשר ומנהל בכדי לקבוע עבורם הכשרה.
+
+הרצה:
+
+![image](https://github.com/user-attachments/assets/31a2bd26-5bdd-4e9d-b58f-4353eb3f8aba)
+
+#### **שאילתא שנייה**
+```sql
+SELECT 
+    volunteer_id,
+    volunteer_name,
+    project_count
+FROM VolunteerFullSummary
+ORDER BY project_count DESC
+LIMIT 10;
+``` 
+מציג את 10 המתנדבים שהשתתפו במספר הפרויקטים הגבוה ביותר עבור הענקת אות הצטיינות.
+
+הרצה:
+
+![image](https://github.com/user-attachments/assets/eb043ca3-46dc-4c40-912f-506e34d01e64)
+
+---
+### **מבט שני - מחלקת שיקום**
+
+```sql
+CREATE VIEW PatientTreatmentOverview AS
+SELECT 
+    p.patient_id,
+    tp.treatment_type,
+    tp.start_date,
+    tp.end_date,
+    tp.sessions_per_week,
+    me.equipment_name,
+    v.volunteer_id,
+    per.first_name || ' ' || per.last_name AS volunteer_name
+FROM patient p
+JOIN treatmentplan tp ON p.patient_id = tp.patient_id
+LEFT JOIN useEquipment ue ON p.patient_id = ue.patient_id AND tp.treatment_type = ue.treatment_type
+LEFT JOIN medicalEquipment me ON ue.equipment_id = me.equipment_id
+LEFT JOIN volunteerInTreatPlan vitp ON p.patient_id = vitp.patient_id AND tp.treatment_type = vitp.treatment_type
+LEFT JOIN volunteer v ON vitp.volunteer_id = v.volunteer_id
+LEFT JOIN person per ON v.volunteer_id = per.id;
+``` 
+מציג מידע על המטופלים, תוכנית הטיפול שלהם, הציוד שבו הם משתמשים, והמתנדבים שמעורבים.
+
+הרצה:
+
+![image](https://github.com/user-attachments/assets/e7e76745-87c9-4147-8da8-4ce76d908860)
+
+
+#### **שאילתא ראשונה**
+```sql
+SELECT patient_id,
+    treatment_type,
+    start_date,
+    end_date,
+    sessions_per_week
+FROM PatientTreatmentOverview
+WHERE volunteer_id is NULL;
+``` 
+מציג תוכניות שיקופ שהן ללא מתנדב, בכדי לבדוק אופציות שיבוץ למתנדבים. 
+
+הרצה:
+
+![image](https://github.com/user-attachments/assets/5e165c94-58d9-4d67-9f58-12ae47e0a57e)
+
+
+#### **שאילתא שנייה**
+```sql
+SELECT treatment_type, SUM(sessions_per_week) AS total_sessions
+FROM PatientTreatmentOverview
+GROUP BY treatment_type;
+``` 
+כמה מפגשים שבועיים מתוכננים לכל סוג טיפול, לצורך איסוף נתונים סטטיסטיים.
+
+הרצה:
+
+
+![image](https://github.com/user-attachments/assets/f4dfb622-2a2f-4002-8295-b115952b8b9f)
 
