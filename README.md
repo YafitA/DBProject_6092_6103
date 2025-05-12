@@ -513,12 +513,13 @@ SELECT * FROM Project WHERE ProjectID = 401;
 
 ### תרשים ERD לאחר האינטגרציה
 
-![imageERD](https://github.com/user-attachments/assets/845cb6a2-8ebb-4446-8756-e3c3eec3130d)
+![ERDDDDDDDDDDDDDDDDDD](https://github.com/user-attachments/assets/fdb93739-0c0d-40d5-a2c5-dae11e0e6690)
 
 ### תרשים DSD לאחר אינטגרציה
 
-![imageDSD](https://github.com/user-attachments/assets/ed4e129c-f26e-4df6-b872-2c5cd12d5b20)
+![DSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS](https://github.com/user-attachments/assets/fd65ef3d-c382-47bb-b006-7461610e9165)
 
+SS
 ---
 ### ✅ החלטות עיצוב באינטגרציה
 בשלב האינטגרציה של בסיס הנתונים, בוצעו מספר החלטות מבניות מהותיות שנועדו לפשט את המודל, למנוע כפילויות, ולוודא עקביות לוגית בין הישויות. להלן פירוט ההחלטות המרכזיות:
@@ -560,4 +561,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
   - `Trained` → `VolunteerTraining`
   - `AssignedTo` → `VolunteerProject`
   - `use` → `use_equipment`
+
+---
+
 
