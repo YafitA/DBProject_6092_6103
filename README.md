@@ -569,10 +569,8 @@ SELECT * FROM Project WHERE ProjectID = 401;
   
 
 ---
-### מבטים
 
-#### מבט ראשון - מחלקת מתנדבים
-##### יצירת מבט:
+### **מבט ראשון - מחלקת מתנדבים**
  ```sql
 CREATE VIEW VolunteerFullSummary AS
 SELECT 
@@ -599,7 +597,7 @@ GROUP BY v.volunteer_id, volunteer_name, p.phone_number, p.email_address, v.skil
 ![image](https://github.com/user-attachments/assets/094bfe8a-1516-40a9-8df8-0f4c8c4d4aab)
 
 
-##### שאילתא ראשונה
+#### **שאילתא ראשונה**
 ```sql
 SELECT 
     volunteer_id,
@@ -615,7 +613,7 @@ WHERE training_count = 0;
 
 ![image](https://github.com/user-attachments/assets/31a2bd26-5bdd-4e9d-b58f-4353eb3f8aba)
 
-##### שאילתא שנייה
+#### **שאילתא שנייה**
 ```sql
 SELECT 
     volunteer_id,
@@ -632,9 +630,7 @@ LIMIT 10;
 ![image](https://github.com/user-attachments/assets/eb043ca3-46dc-4c40-912f-506e34d01e64)
 
 ---
-#### מבט שני - מחלקת שיקום
-##### יצירת מבט:
-
+### **מבט שני - מחלקת שיקום**
 
 ```sql
 CREATE VIEW PatientTreatmentOverview AS
@@ -662,7 +658,7 @@ LEFT JOIN person per ON v.volunteer_id = per.id;
 ![image](https://github.com/user-attachments/assets/e7e76745-87c9-4147-8da8-4ce76d908860)
 
 
-##### שאילתא ראשונה
+#### **שאילתא ראשונה**
 ```sql
 SELECT patient_id,
     treatment_type,
@@ -672,20 +668,20 @@ SELECT patient_id,
 FROM PatientTreatmentOverview
 WHERE volunteer_id is NULL;
 ``` 
-מציג תוכניות שיקופ שאין ללא מתנדב, בכדי לבדוק אופציות שיבוץ למתנדבים. 
+מציג תוכניות שיקופ שהן ללא מתנדב, בכדי לבדוק אופציות שיבוץ למתנדבים. 
 
 הרצה:
 
 ![image](https://github.com/user-attachments/assets/5e165c94-58d9-4d67-9f58-12ae47e0a57e)
 
 
-##### שאילתא שנייה
+#### **שאילתא שנייה**
 ```sql
 SELECT treatment_type, SUM(sessions_per_week) AS total_sessions
 FROM PatientTreatmentOverview
 GROUP BY treatment_type;
 ``` 
-כמה מפגשים שבועיים מתוכננים לכל סוג טיפול, לצורך איסוף נתונים סטיטיסטיים.
+כמה מפגשים שבועיים מתוכננים לכל סוג טיפול, לצורך איסוף נתונים סטטיסטיים.
 
 הרצה:
 
