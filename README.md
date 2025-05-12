@@ -572,6 +572,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
 ### מבטים
 
 #### מבט ראשון - מחלקת מתנדבים
+##### יצירת מבט:
  ```sql
 CREATE VIEW VolunteerFullSummary AS
 SELECT 
@@ -592,13 +593,13 @@ LEFT JOIN volunteerProject vp ON v.volunteer_id = vp.volunteer_id
 LEFT JOIN volunteerInTreatPlan vtp ON v.volunteer_id = vtp.volunteer_id
 GROUP BY v.volunteer_id, volunteer_name, p.phone_number, p.email_address, v.skill, manager_name;
 ``` 
-מציג את סיכום כל מתנדב כולל פרטיו שם המנהל, כישורים, וספירות של הכשרות, פרויקטים ותוכניות שיקום. 
+מבט שמציג את סיכום כל מתנדב כולל פרטיו שם המנהל, כישורים, וספירות של הכשרות, פרויקטים ותוכניות שיקום. 
 
 הרצה:
 ![image](https://github.com/user-attachments/assets/094bfe8a-1516-40a9-8df8-0f4c8c4d4aab)
 
 
-
+##### שאילתא ראשונה
 ```sql
 SELECT 
     volunteer_id,
@@ -611,9 +612,10 @@ WHERE training_count = 0;
 מציג את כל המתנדבים שלא עברו אף הכשרה, כולל פרטי קשר ומנהל בכדי לקבוע עבורם הכשרה.
 
 הרצה:
+
 ![image](https://github.com/user-attachments/assets/31a2bd26-5bdd-4e9d-b58f-4353eb3f8aba)
 
-
+##### שאילתא שנייה
 ```sql
 SELECT 
     volunteer_id,
@@ -626,10 +628,13 @@ LIMIT 10;
 מציג את 10 המתנדבים שהשתתפו במספר הפרויקטים הגבוה ביותר עבור הענקת אות הצטיינות.
 
 הרצה:
+
 ![image](https://github.com/user-attachments/assets/eb043ca3-46dc-4c40-912f-506e34d01e64)
 
-
+---
 #### מבט שני - מחלקת שיקום
+##### יצירת מבט:
+
 
 ```sql
 CREATE VIEW PatientTreatmentOverview AS
@@ -652,19 +657,35 @@ LEFT JOIN person per ON v.volunteer_id = per.id;
 ``` 
 מציג מידע על המטופלים, תוכנית הטיפול שלהם, הציוד שבו הם משתמשים, והמתנדבים שמעורבים.
 
+הרצה:
 
+![image](https://github.com/user-attachments/assets/e7e76745-87c9-4147-8da8-4ce76d908860)
+
+
+##### שאילתא ראשונה
 ```sql
-SELECT *
-FROM PatientTreatmentSummary
+SELECT patient_id,
+    treatment_type,
+    start_date,
+    end_date,
+    sessions_per_week
+FROM PatientTreatmentOverview
 WHERE volunteer_id is NULL;
 ``` 
-מציג מטופלים שאין מתנדב שמעורב בתוכנית השיקום שלהם. 
+מציג תוכניות שיקופ שאין ללא מתנדב, בכדי לבדוק אופציות שיבוץ למתנדביפ. 
 
+הרצה:
+![image](https://github.com/user-attachments/assets/5e165c94-58d9-4d67-9f58-12ae47e0a57e)
+
+
+##### שאילתא שנייה
 ```sql
 SELECT treatment_type, SUM(sessions_per_week) AS total_sessions
 FROM PatientTreatmentOverview
-GROUP BY treatment_type;;
+GROUP BY treatment_type;
 ``` 
-כמה מפגשים שבועיים מתוכננים לכל סוג טיפול
+כמה מפגשים שבועיים מתוכננים לכל סוג טיפול, לצורך נתוניפ סטיטיסטיים.
 
+הרצה:
+![image](https://github.com/user-attachments/assets/f4dfb622-2a2f-4002-8295-b115952b8b9f)
 
