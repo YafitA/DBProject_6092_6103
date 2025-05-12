@@ -23,10 +23,14 @@
   - [הדגמת ROLLBACK](#הדגמת-ROLLBACK)
   - [הדגמת COMMIT](#הדגמת-COMMIT)
 - [שלב ג': אינטגרציה ומבטים](#שלב-ג-אינטגרציה-ומבטים)
-  - [אלגוריתם הינדוס לאחור: מטבלאות ל־DSD ול־ERD](#אלגוריתם-הינדוס-לאחור-מטבלאות-ל־dsd-ול־erd)
+  - [אלגוריתם הינדוס לאחור](#אלגוריתם-הינדוס-לאחור)
     - [שלב א: ניתוח טבלאות](#שלב-א-ניתוח-טבלאות)
     - [שלב ב: יצירת-dsd](#שלב-ב-יצירת-dsd)
     - [שלב ג: המרה-ל־erd](#שלב-ג-המרה-ל־erd)
+  - [תרשים DSD של האגף החדש](#תרשים-dsd-של-האגף-החדש)
+  - [תרשים ERD של האגף החדש](#תרשים-erd-של-האגף-החדש)
+  - [תרשים ERD משותף](#תרשים-erd-משותף)
+  - [תרשים DSD לאחר אינטגרציה](#תרשים-dsd-לאחר-אינטגרציה)
 
   
 
@@ -452,7 +456,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
 ---
 ## שלב ג': אינטגרציה ומבטים
 
-### אלגוריתם הינדוס לאחור: מטבלאות ל־DSD ול־ERD
+### אלגוריתם הינדוס לאחור
 
 #### שלב א: ניתוח טבלאות
 
@@ -504,14 +508,12 @@ SELECT * FROM Project WHERE ProjectID = 401;
 
 ### תרשים ERD של האגף החדש
 
-![image](https://github.com/user-attachments/assets/c9991de4-745b-4e4d-9046-0985aa5402c0)
+![imageDSDNON](https://github.com/user-attachments/assets/9724f28b-b3f4-4a52-9050-b84f95b569cd)
 
 ### תרשים ERD משותף
 
-![image (1)](https://github.com/user-attachments/assets/e05f96d2-ca3e-4560-851f-e489a7e3d2f6)
+![imageERD](https://github.com/user-attachments/assets/845cb6a2-8ebb-4446-8756-e3c3eec3130d)
 
 ### תרשים DSD לאחר אינטגרציה
 
-![image (2)](https://github.com/user-attachments/assets/baf6dd2c-2b63-425d-8cc8-9c9045e83a64)
-
-
+![imageDSD](https://github.com/user-attachments/assets/ed4e129c-f26e-4df6-b872-2c5cd12d5b20)
