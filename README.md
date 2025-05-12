@@ -672,9 +672,10 @@ SELECT patient_id,
 FROM PatientTreatmentOverview
 WHERE volunteer_id is NULL;
 ``` 
-מציג תוכניות שיקופ שאין ללא מתנדב, בכדי לבדוק אופציות שיבוץ למתנדביפ. 
+מציג תוכניות שיקופ שאין ללא מתנדב, בכדי לבדוק אופציות שיבוץ למתנדבים. 
 
 הרצה:
+
 ![image](https://github.com/user-attachments/assets/5e165c94-58d9-4d67-9f58-12ae47e0a57e)
 
 
@@ -684,8 +685,10 @@ SELECT treatment_type, SUM(sessions_per_week) AS total_sessions
 FROM PatientTreatmentOverview
 GROUP BY treatment_type;
 ``` 
-כמה מפגשים שבועיים מתוכננים לכל סוג טיפול, לצורך נתוניפ סטיטיסטיים.
+כמה מפגשים שבועיים מתוכננים לכל סוג טיפול, לצורך איסוף נתונים סטיטיסטיים.
 
 הרצה:
+
+
 ![image](https://github.com/user-attachments/assets/f4dfb622-2a2f-4002-8295-b115952b8b9f)
 
