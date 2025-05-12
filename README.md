@@ -569,7 +569,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
   
 
 ---
-
+### ***מבטים***
 ### **מבט ראשון - מחלקת מתנדבים**
  ```sql
 CREATE VIEW VolunteerFullSummary AS
