@@ -142,11 +142,92 @@ ALTER TABLE Patient DROP COLUMN email;
 ALTER TABLE Patient DROP COLUMN birhday;
 ALTER TABLE Patient DROP COLUMN gender;
 
---Change fields name
-ALTER TABLE use RENAME TO use_equipment;
+--Change tables name
+ALTER TABLE use RENAME TO useEquipment;
 ALTER TABLE m_equipment RENAME TO MedicalEquipment;
 ALTER TABLE m_record RENAME TO MedicalRecord;
 ALTER TABLE treat_plan RENAME TO TreatmentPlan;
 ALTER TABLE WorksIn RENAME TO VolunteerShift;
 ALTER TABLE Trained RENAME TO VolunteerTraining;
 ALTER TABLE AssignedTo RENAME TO VolunteerProject;
+
+--Change variables names
+-- person
+ALTER TABLE person RENAME COLUMN firstname TO first_name;
+ALTER TABLE person RENAME COLUMN lastname TO last_name;
+ALTER TABLE person RENAME COLUMN birthday TO birth_date;
+ALTER TABLE person RENAME COLUMN email TO email_address;
+ALTER TABLE person RENAME COLUMN phone TO phone_number;
+
+-- worker
+ALTER TABLE worker RENAME COLUMN w_id TO worker_id;
+
+-- volunteer
+ALTER TABLE volunteer RENAME COLUMN volunteertypeid TO volunteer_type_id;
+ALTER TABLE volunteer RENAME COLUMN managerid TO manager_id;
+ALTER TABLE volunteer RENAME COLUMN volunteerid TO volunteer_id;
+
+-- volunteertype
+ALTER TABLE volunteertype RENAME COLUMN volunteertypeid TO volunteer_type_id;
+ALTER TABLE volunteertype RENAME COLUMN typename TO type_name;
+
+-- volunteerintreatplan
+ALTER TABLE volunteerintreatplan RENAME COLUMN patientid TO patient_id;
+ALTER TABLE volunteerintreatplan RENAME COLUMN volunteerid TO volunteer_id;
+ALTER TABLE volunteerintreatplan RENAME COLUMN treattype TO treatment_type;
+
+-- treatmentplan
+ALTER TABLE treatmentplan RENAME COLUMN treat_type TO treatment_type;
+ALTER TABLE treatmentplan RENAME COLUMN patientid TO patient_id;
+
+-- appointment
+ALTER TABLE appointment RENAME COLUMN workerid TO worker_id;
+ALTER TABLE appointment RENAME COLUMN patientid TO patient_id;
+ALTER TABLE appointment RENAME COLUMN date TO appointment_date;
+ALTER TABLE appointment RENAME COLUMN time TO appointment_time;
+
+-- project
+ALTER TABLE project RENAME COLUMN projectid TO project_id;
+ALTER TABLE project RENAME COLUMN projectname TO project_name;
+ALTER TABLE project RENAME COLUMN startdate TO start_date;
+ALTER TABLE project RENAME COLUMN enddate TO end_date;
+ALTER TABLE project RENAME COLUMN managerid TO manager_id;
+
+-- volunteerproject
+ALTER TABLE volunteerproject RENAME COLUMN volunteerid TO volunteer_id;
+ALTER TABLE volunteerproject RENAME COLUMN projectid TO project_id;
+
+-- volunteershift
+ALTER TABLE volunteershift RENAME COLUMN volunteerid TO volunteer_id;
+ALTER TABLE volunteershift RENAME COLUMN shiftid TO shift_id;
+
+-- shift
+ALTER TABLE shift RENAME COLUMN shiftid TO shift_id;
+ALTER TABLE shift RENAME COLUMN shiftdate TO shift_date;
+ALTER TABLE shift RENAME COLUMN starttime TO start_time;
+ALTER TABLE shift RENAME COLUMN endtime TO end_time;
+
+-- training
+ALTER TABLE training RENAME COLUMN trainingid TO training_id;
+ALTER TABLE training RENAME COLUMN trainingname TO training_name;
+ALTER TABLE training RENAME COLUMN trainingdate TO training_date;
+
+-- volunteertraining
+ALTER TABLE volunteertraining RENAME COLUMN volunteerid TO volunteer_id;
+ALTER TABLE volunteertraining RENAME COLUMN trainingid TO training_id;
+
+-- medicalrecord
+ALTER TABLE medicalrecord RENAME COLUMN recordid TO record_id;
+ALTER TABLE medicalrecord RENAME COLUMN family_s TO family_status;
+ALTER TABLE medicalrecord RENAME COLUMN causing_injury TO cause_of_injury;
+
+-- medicalequipment
+ALTER TABLE medicalequipment RENAME COLUMN equipid TO equipment_id;
+ALTER TABLE medicalequipment RENAME COLUMN name TO equipment_name;
+ALTER TABLE medicalequipment RENAME COLUMN dest_age TO destination_age;
+
+-- useequipment
+ALTER TABLE useequipment RENAME COLUMN equip_id TO equipment_id;
+
+-- patient
+ALTER TABLE patient RENAME COLUMN patientid TO patient_id;
