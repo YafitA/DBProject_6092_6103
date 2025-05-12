@@ -552,7 +552,7 @@ SS
   הקשר כולל שלושה שדות כמפתח ראשי: `VolunteerID`, `TreatType`, `PatientID`.  
   מאפשר לדעת אילו מתנדבים מעורבים באילו תוכניות ובאילו מטופלים.
 
-ז. **שינוי שמות טבלאות לצורך אחידות ובהירות:**  
+ז. **שינוי שמות טבלאות ושדות לצורך אחידות ובהירות:**  
   שונו שמות של מספר טבלאות לשמות ברורים ואחידים:
   - `m_record` → `MedicalRecord`
   - `m_equipment` → `MedicalEquipment`
@@ -561,6 +561,12 @@ SS
   - `Trained` → `VolunteerTraining`
   - `AssignedTo` → `VolunteerProject`
   - `use` → `use_equipment`
+שונו שמות של מספר לשדות ברורים ואחידים - לדוגמא:
+  - `equip_id` → `equipment_id`
+  - `patientid` → `patient_id`
+  - `family_s` → `family_status`
+  - `patientid` → `patient_id`
+  - `date` → `appointment_date`
 
 ---
 
