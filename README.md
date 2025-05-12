@@ -31,6 +31,7 @@
   - [תרשים ERD של האגף החדש](#תרשים-erd-של-האגף-החדש)
   - [תרשים ERD משותף](#תרשים-erd-משותף)
   - [תרשים DSD לאחר אינטגרציה](#תרשים-dsd-לאחר-אינטגרציה)
+  - [החלטות עיצוב באינטגרציה](#החלטות-עיצוב-באינטגרציה)
 
   
 
@@ -519,7 +520,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
 
 ![DSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS](https://github.com/user-attachments/assets/fd65ef3d-c382-47bb-b006-7461610e9165)
 
-SS
+
 ---
 ### ✅ החלטות עיצוב באינטגרציה
 בשלב האינטגרציה של בסיס הנתונים, בוצעו מספר החלטות מבניות מהותיות שנועדו לפשט את המודל, למנוע כפילויות, ולוודא עקביות לוגית בין הישויות. להלן פירוט ההחלטות המרכזיות:
@@ -561,7 +562,7 @@ SS
   - `Trained` → `VolunteerTraining`
   - `AssignedTo` → `VolunteerProject`
   - `use` → `use_equipment`
-שונו שמות של מספר לשדות ברורים ואחידים - לדוגמא:
+  שונו שמות של מספר לשדות ברורים ואחידים - לדוגמא:
   - `equip_id` → `equipment_id`
   - `patientid` → `patient_id`
   - `family_s` → `family_status`
