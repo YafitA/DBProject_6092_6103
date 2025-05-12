@@ -563,6 +563,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
   - `AssignedTo` → `VolunteerProject`
   - `use` → `use_equipment`
   שונו שמות של מספר לשדות ברורים ואחידים - לדוגמא:
+
   - `equip_id` → `equipment_id`
   - `patientid` → `patient_id`
   - `family_s` → `family_status`
