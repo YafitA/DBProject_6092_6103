@@ -578,7 +578,6 @@ SELECT
     v.volunteer_id,
     CONCAT(p.first_name, ' ', p.last_name) AS volunteer_name,
     p.phone_number,
-    p.email_address,
     v.skill,
     CONCAT(mp.first_name, ' ', mp.last_name) AS manager_name,
     COUNT(DISTINCT vt.training_id) AS training_count,
@@ -593,7 +592,11 @@ LEFT JOIN volunteerProject vp ON v.volunteer_id = vp.volunteer_id
 LEFT JOIN volunteerInTreatPlan vtp ON v.volunteer_id = vtp.volunteer_id
 GROUP BY v.volunteer_id, volunteer_name, p.phone_number, p.email_address, v.skill, manager_name;
 ``` 
-מציג את סיכום כל מתנדב כולל שם, אימייל, טלפון, שם המנהל, כישורים, וספירות של הכשרות, פרויקטים ותוכניות שיקום. 
+מציג את סיכום כל מתנדב כולל פרטיו שם המנהל, כישורים, וספירות של הכשרות, פרויקטים ותוכניות שיקום. 
+
+הרצה:
+![image](https://github.com/user-attachments/assets/094bfe8a-1516-40a9-8df8-0f4c8c4d4aab)
+
 
 
 ```sql
@@ -601,13 +604,15 @@ SELECT
     volunteer_id,
     volunteer_name,
     phone_number,
-    email_address,
-    skill,
     manager_name
 FROM VolunteerFullSummary
 WHERE training_count = 0;
 ``` 
-מציג את כל המתנדבים שלא עברו אף הכשרה, כולל פרטי קשר ומנהל.
+מציג את כל המתנדבים שלא עברו אף הכשרה, כולל פרטי קשר ומנהל בכדי לקבוע עבורם הכשרה.
+
+הרצה:
+![image](https://github.com/user-attachments/assets/31a2bd26-5bdd-4e9d-b58f-4353eb3f8aba)
+
 
 ```sql
 SELECT 
@@ -618,7 +623,11 @@ FROM VolunteerFullSummary
 ORDER BY project_count DESC
 LIMIT 10;
 ``` 
-מציג את 10 המתנדבים שהשתתפו במספר הפרויקטים הגבוה ביותר.
+מציג את 10 המתנדבים שהשתתפו במספר הפרויקטים הגבוה ביותר עבור הענקת אות הצטיינות.
+
+הרצה:
+![image](https://github.com/user-attachments/assets/eb043ca3-46dc-4c40-912f-506e34d01e64)
+
 
 #### מבט שני - מחלקת שיקום
 
