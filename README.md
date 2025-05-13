@@ -31,6 +31,7 @@
   - [תרשים ERD של האגף החדש](#תרשים-erd-של-האגף-החדש)
   - [תרשים ERD לאחר אינטגרציה](#תרשים-erd-לאחר-אינטגרציה)
   - [תרשים DSD לאחר אינטגרציה](#תרשים-dsd-לאחר-אינטגרציה)
+  - [תיאור תהליך האינטגרציה במסד הנתונים](#תיאור-תהליך-האינטגרציה-במסד-הנתונים)
   - [החלטות עיצוב באינטגרציה](#החלטות-עיצוב-באינטגרציה)
   - [מבטים](#מבטים)
 
@@ -521,8 +522,153 @@ SELECT * FROM Project WHERE ProjectID = 401;
 
 ![DSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS](https://github.com/user-attachments/assets/fd65ef3d-c382-47bb-b006-7461610e9165)
 
+---
+### **תיאור תהליך האינטגרציה במסד הנתונים**
+
+במסגרת תהליך אינטגרציית הנתונים במסד הנתונים של מערכת ניהול מתנדבים בבית חולים, ביצענו מספר שלבים משמעותיים שמטרתם לאחד ישויות שונות, לפשט את המודל ולשפר את היכולת לנהל ולתחזק את המידע. להלן הסבר מילולי של השלבים והפקודות שבוצעו:
+
+### 1. יצירת ישות מאוחדת: Person
+
+מכיוון שיש לנו מספר ישויות שונות המייצגות בני אדם (כמו מתנדבים, מנהלים, מטופלים, אנשי צוות), החלטנו ליצור ישות אחת בשם `Person` שתכיל את כל המידע הבסיסי המשותף לכל אדם (שם, אימייל, טלפון, כתובת, תאריך לידה וכו’):
+
+```sql
+CREATE TABLE Person (
+    id SERIAL PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address VARCHAR(255),
+    birthday DATE,
+    gender VARCHAR(10)
+);
+```
+
+### 2. העברת נתונים ל-`Person`
+
+ביצענו העברה של הנתונים מתוך הטבלאות הישנות (`Manager`, `Volunteer`, `Patient`, `Staff_Member`) לישות החדשה `Person`:
+
+```sql
+-- Insert from Manager
+INSERT INTO Person (id, FirstName, LastName, email, phone)
+SELECT ManagerID, FirstName, LastName, Email, PhoneNumber FROM Manager;
+
+-- Insert from Volunteer
+INSERT INTO Person (id, FirstName, LastName, email, phone)
+SELECT VolunteerID, FirstName, LastName, Email, PhoneNumber FROM Volunteer;
+
+-- Insert from Patient
+INSERT INTO Person (...)
+-- כולל פיצול שם מלא לשם פרטי ומשפחה
+
+-- Insert from Staff_Member
+INSERT INTO Person (...)
+-- כולל יצירת אימייל וטלפון רנדומליים
+```
+
+### 3. יצירת ישות `Worker` לאיחוד עובדים (מנהלים + אנשי צוות)
+
+```sql
+CREATE TABLE Worker (
+  W_id SERIAL PRIMARY KEY,
+  Role VARCHAR(50) NOT NULL,
+  FOREIGN KEY (W_id) REFERENCES Person(id)
+);
+```
+
+לאחר מכן העברנו את המנהלים ואנשי הצוות לישות זו:
+
+```sql
+INSERT INTO Worker (W_id, Role)
+SELECT ManagerID, 'Manager' FROM Manager;
+
+INSERT INTO Worker (W_id, Role)
+SELECT id, role FROM Staff_Member;
+```
+
+### 4. עדכון קשרים לטבלאות אחרות
+
+שינינו את מפתחות הזרים בטבלאות שתלויות במנהל או איש צוות כך שיפנו ל-`Worker` במקום ל-`Manager` או `Staff_Member`:
+
+```sql
+ALTER TABLE Volunteer DROP CONSTRAINT ... ADD CONSTRAINT ... REFERENCES Worker;
+ALTER TABLE Project DROP CONSTRAINT ... ADD CONSTRAINT ... REFERENCES Worker;
+ALTER TABLE Appointment DROP CONSTRAINT ... ADD CONSTRAINT ... REFERENCES Worker;
+```
+
+### 5. יצירת טבלה חדשה: `VolunteerInTreatPlan`
+
+הוספנו טבלה שמייצגת את הקשר בין מתנדב לתוכנית טיפול:
+
+```sql
+CREATE TABLE VolunteerInTreatPlan (
+    VolunteerID INT NOT NULL,
+    TreatType VARCHAR(50) NOT NULL,
+    PatientID INT NOT NULL,
+    PRIMARY KEY (VolunteerID, TreatType, PatientID),
+    FOREIGN KEY (...) REFERENCES ...
+);
+```
+
+והכנסנו לתוכה רשומות רנדומליות:
+
+```sql
+INSERT INTO VolunteerInTreatPlan (...)
+SELECT ... FROM Volunteer CROSS JOIN TreatmentPlan ORDER BY RANDOM() LIMIT 100;
+```
+
+### 6. עדכון מפתח ראשי ב-m\_record
+
+```sql
+ALTER TABLE m_record ADD COLUMN RecordID SERIAL PRIMARY KEY;
+ALTER TABLE m_record DROP CONSTRAINT m_record_pkey;
+ALTER TABLE m_record ADD CONSTRAINT m_record_pkey PRIMARY KEY (RecordID, patient_id);
+ALTER TABLE m_record ADD CONSTRAINT unique_patient_record UNIQUE (patient_id);
+```
+
+### 7. מחיקת טבלאות ישנות
+
+```sql
+DROP TABLE IF EXISTS Manager;
+DROP TABLE IF EXISTS Staff_Member;
+```
+
+### 8. טיהור טבלאות קיימות
+
+ביצענו הסרה של עמודות כפולות שכבר הועברו ל-`Person`, והוספת קשרים לישות `Person`:
+
+```sql
+-- Volunteer
+ALTER TABLE Volunteer ADD CONSTRAINT ... FOREIGN KEY REFERENCES Person;
+ALTER TABLE Volunteer DROP COLUMN FirstName, ...;
+
+-- Patient
+ALTER TABLE Patient ADD CONSTRAINT ... FOREIGN KEY REFERENCES Person;
+ALTER TABLE Patient DROP COLUMN name, address, ...;
+```
+
+### 9. שינוי שמות טבלאות
+
+שינינו שמות טבלאות כך שישקפו טוב יותר את התוכן שלהן:
+
+```sql
+ALTER TABLE use RENAME TO useEquipment;
+ALTER TABLE m_equipment RENAME TO MedicalEquipment;
+...
+```
+
+### 10. שינוי שמות עמודות
+
+שינינו שמות עמודות כך שיהיו תואמות לקונבנציות של snake\_case ולשמות ברורים ואחידים:
+
+```sql
+ALTER TABLE person RENAME COLUMN firstname TO first_name;
+ALTER TABLE worker RENAME COLUMN w_id TO worker_id;
+...
+```
 
 ---
+
 ### החלטות עיצוב באינטגרציה
 בשלב האינטגרציה של בסיס הנתונים, בוצעו מספר החלטות מבניות מהותיות שנועדו לפשט את המודל, למנוע כפילויות, ולוודא עקביות לוגית בין הישויות. להלן פירוט ההחלטות המרכזיות:
 
@@ -687,4 +833,7 @@ GROUP BY treatment_type;
 
 
 ![image](https://github.com/user-attachments/assets/f4dfb622-2a2f-4002-8295-b115952b8b9f)
+
+---
+
 
