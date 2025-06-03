@@ -54,7 +54,7 @@ BEGIN
 
                     RAISE NOTICE 'Volunteer % was assigned to project %', vol_rec.first_name || ' ' || vol_rec.last_name, selected_project;
                 ELSE
-                    RAISE NOTICE 'No suitable projects found for volunteer %', vol_rec.first_name;
+                    RAISE NOTICE 'o suitable projects found for volunteer %', vol_rec.first_name;
                 END IF;
             ELSE
                 RAISE NOTICE 'Volunteer % is already assigned to % projects (maximum is 3)', vol_rec.first_name, current_projects;
@@ -91,7 +91,7 @@ BEGIN
         RAISE EXCEPTION 'Invalid action type: %. Use ADD or REMOVE', action_type;
     END IF;
 
-    COMMIT;
+
 
 EXCEPTION
     WHEN OTHERS THEN
@@ -99,3 +99,4 @@ EXCEPTION
         RAISE NOTICE 'Error in project management: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
+
