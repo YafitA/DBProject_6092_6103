@@ -49,3 +49,55 @@ EXCEPTION
         RAISE NOTICE 'Error in main program: %', SQLERRM;
 END;
 $$;
+
+
+
+
+-- ================================================
+-- תוכנית ראשית 2: דוח מטופלים ועדכון ציוד רפואי
+-- ================================================
+DO $$
+DECLARE
+    patients_cursor REFCURSOR;
+    patient_rec RECORD;
+    equipment_updated_count INTEGER;
+    equipment_report TEXT;
+BEGIN
+    RAISE NOTICE '=== Start of Patient and Medical Equipment Report ===';
+
+    -- קריאה לפונקציה שמחזירה REF CURSOR
+    SELECT get_active_patients_cursor() INTO patients_cursor;
+
+    IF patients_cursor IS NOT NULL THEN
+        RAISE NOTICE E'\n--- Active Patients ---';
+
+        LOOP
+            FETCH patients_cursor INTO patient_rec;
+            EXIT WHEN NOT FOUND;
+
+            RAISE NOTICE 'Patient: % | Injury Severity: % | Injury Cause: % | Volunteers: % | Treatments: %',
+                patient_rec.patient_name,
+                patient_rec.severity_of_injury,
+                patient_rec.cause_of_injury,
+                patient_rec.volunteer_count,
+                patient_rec.treatments;
+        END LOOP;
+
+        CLOSE patients_cursor;
+    END IF;
+
+    -- קריאה לפרוצדורה לעדכון ציוד רפואי
+    RAISE NOTICE E'\n--- Medical Equipment Status Update ---';
+
+    CALL update_equipment_status_report(equipment_updated_count, equipment_report, 6);
+
+    RAISE NOTICE E'\n%', equipment_report;
+    RAISE NOTICE E'\nTotal Updated Equipment Items: %', equipment_updated_count;
+
+    RAISE NOTICE E'\n=== End of Patient and Medical Equipment Report ===';
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Error in Main Program: %', SQLERRM;
+END;
+$$;

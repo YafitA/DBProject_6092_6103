@@ -88,3 +88,74 @@ CREATE OR REPLACE TRIGGER trg_check_volunteer_project_conflicts
     BEFORE INSERT OR UPDATE ON volunteerProject
     FOR EACH ROW
     EXECUTE FUNCTION check_volunteer_project_conflicts();
+
+
+
+
+-- ================================================
+-- טריגר 2: רישום היסטוריה של שינויים במידע מטופלים
+-- ================================================
+
+-- יצירת טבלת היסטוריה (ללא שינוי הטבלאות הקיימות)
+CREATE TABLE IF NOT EXISTS medical_record_history (
+    history_id SERIAL PRIMARY KEY,
+    record_id INTEGER,
+    patient_id INTEGER,
+    old_severity INTEGER,
+    new_severity INTEGER,
+    old_cause VARCHAR,
+    new_cause VARCHAR,
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    change_type VARCHAR
+);
+
+CREATE OR REPLACE FUNCTION log_medical_record_changes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'UPDATE' THEN
+        -- רישום שינויים
+        INSERT INTO medical_record_history (
+            record_id, patient_id, old_severity, new_severity,
+            old_cause, new_cause, change_type
+        ) VALUES (
+            OLD.record_id, OLD.patient_id, OLD.severity_of_injury, NEW.severity_of_injury,
+            OLD.cause_of_injury, NEW.cause_of_injury, 'UPDATE'
+        );
+
+        -- בדיקת שינוי משמעותי בחומרת הפציעה
+        IF NEW.severity_of_injury > OLD.severity_of_injury + 2 THEN
+            RAISE NOTICE 'Warning: The severity of patient %''s injury has significantly increased from % to %',
+                        OLD.patient_id, OLD.severity_of_injury, NEW.severity_of_injury;
+        END IF;
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'INSERT' THEN
+        INSERT INTO medical_record_history (
+            record_id, patient_id, new_severity, new_cause, change_type
+        ) VALUES (
+            NEW.record_id, NEW.patient_id, NEW.severity_of_injury,
+            NEW.cause_of_injury, 'INSERT'
+        );
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO medical_record_history (
+            record_id, patient_id, old_severity, old_cause, change_type
+        ) VALUES (
+            OLD.record_id, OLD.patient_id, OLD.severity_of_injury,
+            OLD.cause_of_injury, 'DELETE'
+        );
+
+        RETURN OLD;
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_medical_record_history
+    AFTER INSERT OR UPDATE OR DELETE ON medicalRecord
+    FOR EACH ROW
+    EXECUTE FUNCTION log_medical_record_changes();

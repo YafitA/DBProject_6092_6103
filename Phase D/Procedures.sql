@@ -98,3 +98,88 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
+
+
+-- ================================================
+-- פרוצדורה 2: עדכון סטטוס ציוד רפואי עם דוח מפורט
+-- ================================================
+CREATE OR REPLACE PROCEDURE update_equipment_status_report(
+    OUT updated_count INTEGER,
+    OUT report_text TEXT,
+    IN equipment_age_threshold INTEGER DEFAULT 5
+) AS $$
+DECLARE
+    equip_rec RECORD;
+    equip_cursor CURSOR FOR
+        SELECT equipment_id, equipment_name, destination_age, status
+        FROM medicalEquipment
+        WHERE destination_age >= equipment_age_threshold;
+    old_status VARCHAR;
+    new_status VARCHAR;
+    usage_count INTEGER;
+    report_lines TEXT[] := ARRAY[]::TEXT[];
+    total_updated INTEGER := 0;
+BEGIN
+    report_lines := array_append(report_lines, '=== Medical Equipment Status Update Report ===');
+    report_lines := array_append(report_lines, 'Date: ' || CURRENT_DATE);
+    report_lines := array_append(report_lines, 'Minimum Age for Examination: ' || equipment_age_threshold || ' Years');
+    report_lines := array_append(report_lines, '');
+
+    -- לולאה על כל פריט ציוד
+    FOR equip_rec IN equip_cursor LOOP
+        old_status := equip_rec.status;
+
+        -- בדיקת שימוש בציוד
+        SELECT COUNT(*) INTO usage_count
+        FROM useEquipment
+        WHERE equipment_id = equip_rec.equipment_id;
+
+        -- קביעת סטטוס חדש לפי גיל ושימוש
+        IF equip_rec.destination_age >= 10 THEN
+            IF usage_count > 5 THEN
+                new_status := 'Urgent';
+            ELSE
+                new_status := 'For Check';
+            END IF;
+        ELSIF equip_rec.destination_age >= 7 THEN
+            new_status := 'Maintenance';
+        ELSE
+            new_status := 'Active';
+        END IF;
+
+        -- עדכון הסטטוס אם השתנה
+        IF old_status IS DISTINCT FROM new_status THEN
+            UPDATE medicalEquipment
+            SET status = new_status
+            WHERE equipment_id = equip_rec.equipment_id;
+
+            total_updated := total_updated + 1;
+
+            report_lines := array_append(report_lines,
+                'Equipment: ' || equip_rec.equipment_name ||
+                ' (ID: ' || equip_rec.equipment_id || ')' ||
+                ' - Age: ' || equip_rec.destination_age ||
+                ' - Usages: ' || usage_count ||
+                ' - Status Extended From-"' || COALESCE(old_status, 'NULL') ||
+                '" to-"' || new_status || '"');
+        END IF;
+    END LOOP;
+
+    updated_count := total_updated;
+
+    IF total_updated = 0 THEN
+        report_lines := array_append(report_lines, 'No Updates Required.');
+    ELSE
+        report_lines := array_append(report_lines, '');
+        report_lines := array_append(report_lines, 'Total Updated Equipment Items: ' || total_updated);
+    END IF;
+
+    report_text := array_to_string(report_lines, E'\n');
+
+EXCEPTION
+    WHEN OTHERS THEN
+        updated_count := -1;
+        report_text := 'Equipment Status Update Error: ' || SQLERRM;
+        ROLLBACK;
+END;
+$$ LANGUAGE plpgsql;
