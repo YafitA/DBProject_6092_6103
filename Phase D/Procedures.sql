@@ -91,8 +91,6 @@ BEGIN
         RAISE EXCEPTION 'Invalid action type: %. Use ADD or REMOVE', action_type;
     END IF;
 
-
-
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
