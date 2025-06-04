@@ -34,6 +34,7 @@
   - [תיאור תהליך האינטגרציה במסד הנתונים](#תיאור-תהליך-האינטגרציה-במסד-הנתונים)
   - [החלטות עיצוב באינטגרציה](#החלטות-עיצוב-באינטגרציה)
   - [מבטים](#מבטים)
+- [שלב ד' : תכנות](#שלב-ד-תכנות)
 
   
 
@@ -41,7 +42,7 @@
 
 ---
 
-## **שלב א': עיצוב, בנייה ואכלוס נתונים וגיבוי**  
+# **שלב א': עיצוב, בנייה ואכלוס נתונים וגיבוי**  
 
 ### **מבוא**  
 
@@ -130,7 +131,7 @@
 
 ---
 
-## **שלב ב': שאילתות**
+# **שלב ב': שאילתות**
 
 ### 8 שאילתות SELECT
 
@@ -457,7 +458,7 @@ SELECT * FROM Project WHERE ProjectID = 401;
 ![image](https://github.com/user-attachments/assets/1297ce44-0b30-4121-87ca-66de76ab64fc)
 
 ---
-## שלב ג': אינטגרציה ומבטים
+# שלב ג': אינטגרציה ומבטים
 
 ### אלגוריתם הינדוס לאחור
 
@@ -835,5 +836,629 @@ GROUP BY treatment_type;
 ![image](https://github.com/user-attachments/assets/f4dfb622-2a2f-4002-8295-b115952b8b9f)
 
 ---
+
+# **שלב ד': תכנותי**  
+
+## 📊 פונקציות
+
+### פונקציה 1: חישוב עומס עבודה של מתנדבים
+
+**תיאור מילולי:**
+פונקציה זו מחשבת את עומס העבודה של כל מתנדב במערכת על בסיס מספר הפרויקטים, המשמרות וההכשרות שלו. הפונקציה משתמשת ב-Cursor מפורש לעיבור כל המתנדבים, מחשבת ציון עומס משוקלל, ומסווגת כל מתנדב לקטגוריית עומס מתאימה. הפונקציה מחזירה טבלה עם פרטי העומס של כל מתנדב.
+
+**הקוד:**
+```sql
+-- ================================================
+-- פונקציה 1: חישוב עומס עבודה של מתנדבים עם סטטיסטיקות
+-- ================================================
+CREATE OR REPLACE FUNCTION calculate_volunteer_workload()
+RETURNS TABLE (
+    volunteer_id INTEGER,
+    volunteer_name VARCHAR,
+    projects_count INTEGER,
+    shifts_count INTEGER,
+    training_count INTEGER,
+    workload_score NUMERIC,
+    workload_category VARCHAR
+) AS $$
+DECLARE
+    vol_rec RECORD;
+    vol_cursor CURSOR FOR 
+        SELECT v.volunteer_id, p.first_name, p.last_name, v.skill
+        FROM volunteer v
+        JOIN person p ON v.volunteer_id = p.id;
+    proj_count INTEGER;
+    shift_count INTEGER;
+    train_count INTEGER;
+    score NUMERIC;
+    category VARCHAR;
+BEGIN
+    -- פתיחת cursor מפורש
+    OPEN vol_cursor;
+    
+    LOOP
+        FETCH vol_cursor INTO vol_rec;
+        EXIT WHEN NOT FOUND;
+        
+        -- חישוב מספר פרויקטים
+        SELECT COUNT(*) INTO proj_count
+        FROM volunteerProject vp
+        WHERE vp.volunteer_id = vol_rec.volunteer_id;
+        
+        -- חישוב מספר משמרות
+        SELECT COUNT(*) INTO shift_count
+        FROM volunteerShift vs
+        WHERE vs.volunteer_id = vol_rec.volunteer_id;
+        
+        -- חישוב מספר הכשרות
+        SELECT COUNT(*) INTO train_count
+        FROM volunteerTraining vt
+        WHERE vt.volunteer_id = vol_rec.volunteer_id;
+        
+        -- חישוב ציון עומס עבודה
+        score := (proj_count * 3.0) + (shift_count * 2.0) + (train_count * 1.5);
+        
+        -- קביעת קטגוריית עומס עבודה
+        IF score >= 20 THEN
+            category := 'High Load';
+        ELSIF score >= 10 THEN
+            category := 'Medium Load';
+        ELSIF score >= 5 THEN
+            category := 'Low Load';
+        ELSE
+            category := 'Minimal Load';
+        END IF;
+        
+        -- החזרת השורה
+        volunteer_id := vol_rec.volunteer_id;
+        volunteer_name := vol_rec.first_name || ' ' || vol_rec.last_name;
+        projects_count := proj_count;
+        shifts_count := shift_count;
+        training_count := train_count;
+        workload_score := score;
+        workload_category := category;
+        
+        RETURN NEXT;
+    END LOOP;
+    
+    CLOSE vol_cursor;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Error calculating workload: %', SQLERRM;
+        RETURN;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+הרצה:
+![photo_5906829537226902241_y](https://github.com/user-attachments/assets/c29ed832-daae-43f2-a42d-abdbdb29de1b)
+
+
+### פונקציה 2: החזרת REF CURSOR למטופלים פעילים
+
+**תיאור מילולי:**
+פונקציה זו מחזירה REF CURSOR המכיל מידע על מטופלים פעילים במערכת. הפונקציה בודקת תחילה שקיימים מטופלים במערכת, ואז פותחת cursor עם שאילתה מורכבת הכוללת מידע רפואי ופרטי טיפול. הנתונים כוללים שם המטופל, חומרת הפציעה, סיבת הפציעה, מספר המתנדבים המטפלים וסוגי הטיפולים.
+
+**הקוד:**
+```sql
+-- ================================================
+-- פונקציה 2: החזרת REF CURSOR למטופלים פעילים
+-- ================================================
+CREATE OR REPLACE FUNCTION get_active_patients_cursor()
+RETURNS REFCURSOR AS $$
+DECLARE
+    patient_cursor REFCURSOR := 'active_patients_cur';
+    patient_count INTEGER;
+BEGIN
+    -- בדיקת מספר מטופלים
+    SELECT COUNT(*) INTO patient_count FROM patient;
+    
+    IF patient_count = 0 THEN
+        RAISE EXCEPTION 'No patients found in system';
+    END IF;
+    
+    -- פתיחת cursor
+    OPEN patient_cursor FOR
+        SELECT DISTINCT 
+            p.patient_id,
+            per.first_name || ' ' || per.last_name as patient_name,
+            mr.severity_of_injury,
+            mr.cause_of_injury,
+            COUNT(vtp.volunteer_id) as volunteer_count,
+            STRING_AGG(DISTINCT vtp.treatment_type, ', ') as treatments
+        FROM patient p
+        LEFT JOIN person per ON p.patient_id = per.id
+        LEFT JOIN medicalRecord mr ON p.patient_id = mr.patient_id
+        LEFT JOIN volunteerInTreatPlan vtp ON p.patient_id = vtp.patient_id
+        GROUP BY p.patient_id, per.first_name, per.last_name, mr.severity_of_injury, mr.cause_of_injury
+        HAVING COUNT(vtp.volunteer_id) > 0
+        ORDER BY mr.severity_of_injury DESC;
+    
+    RETURN patient_cursor;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Error returning cursor: %', SQLERRM;
+        RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+```
+הרצה
+
+
+![image](https://github.com/user-attachments/assets/2872e0b4-3b6c-4e23-9b87-2fac3cc9d1dd)
+
+---
+
+## 🔧 פרוצדורות
+
+### פרוצדורה 1: ניהול פרויקטים - הקצאה והסרה אוטומטית
+
+**תיאור מילולי:**
+פרוצדורה מתקדמת לניהול הקצאות מתנדבים לפרויקטים. הפרוצדורה מקבלת פרמטרים לסוג הפעולה (הוספה/הסרה), מזהה מתנדב ומזהה פרויקט אופציונלי. במקרה של הוספה ללא פרויקט ספציפי, הפרוצדורה מוצאת אוטומטית פרויקט מתאים. הפרוצדורה כוללת בדיקות תקינות, הגבלת מספר פרויקטים למתנדב, וניהול שגיאות מתקדם.
+
+**הקוד:**
+```sql
+-- ================================================
+-- פרוצדורה 1: ניהול פרויקטים - הקצאה והסרה אוטומטית
+-- ================================================
+CREATE OR REPLACE PROCEDURE manage_volunteer_projects(
+    IN action_type VARCHAR,
+    IN p_volunteer_id INTEGER,
+![Uploading photo_5906829537226902246_y.jpg…]()
+    IN p_project_id INTEGER DEFAULT NULL
+) AS $$![Uploading photo_5906829537226902246_y.jpg…]()
+
+DECLARE![Uploading photo_5906829537226902246_y.jpg…]()
+
+    vol_rec RECORD;
+    proj_rec RECORD;
+    current_projects INTEGER;
+    suitable_projects INTEGER[];
+    selected_project INTEGER;
+    i INTEGER;
+BEGIN
+    -- בדיקת קיום המתנדב
+    SELECT v.*, p.first_name, p.last_name, p.email_address
+    INTO vol_rec
+    FROM volunteer v
+    JOIN person p ON v.volunteer_id = p.id
+    WHERE v.volunteer_id = p_volunteer_id;
+    
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Volunteer with ID % not found', p_volunteer_id;
+    END IF;
+    
+    -- בדיקת סוג הפעולה
+    IF action_type = 'ADD' THEN
+        -- הוספת מתנדב לפרויקט
+        IF p_project_id IS NULL THEN
+            -- בחירה אוטומטית של פרויקט מתאים
+            SELECT COUNT(*) INTO current_projects
+            FROM volunteerProject
+            WHERE volunteer_id = p_volunteer_id;
+            
+            -- אם למתנדב יש פחות מ-3 פרויקטים, חפש פרויקט מתאים
+            IF current_projects < 3 THEN
+                -- מציאת פרויקטים פעילים שהמתנדב לא משתתף בהם
+                SELECT ARRAY_AGG(pr.project_id) INTO suitable_projects
+                FROM project pr
+                WHERE pr.end_date > CURRENT_DATE
+                AND pr.project_id NOT IN (
+                    SELECT vp.project_id 
+                    FROM volunteerProject vp 
+                    WHERE vp.volunteer_id = p_volunteer_id
+                );
+                
+                IF array_length(suitable_projects, 1) > 0 THEN
+                    selected_project := suitable_projects[1];
+                    
+                    INSERT INTO volunteerProject (volunteer_id, project_id)
+                    VALUES (p_volunteer_id, selected_project);
+                    
+                    RAISE NOTICE 'Volunteer % assigned to project %', vol_rec.first_name || ' ' || vol_rec.last_name, selected_project;
+                ELSE
+                    RAISE NOTICE 'No suitable projects found for volunteer %', vol_rec.first_name;
+                END IF;
+            ELSE
+                RAISE NOTICE 'Volunteer % already participates in % projects (maximum 3)', vol_rec.first_name, current_projects;
+            END IF;
+        ELSE
+            -- הוספה לפרויקט ספציפי
+            SELECT * INTO proj_rec FROM project WHERE project_id = p_project_id;
+            
+            IF NOT FOUND THEN
+                RAISE EXCEPTION 'Project with ID % not found', p_project_id;
+            END IF;
+            
+            INSERT INTO volunteerProject (volunteer_id, project_id)
+            VALUES (p_volunteer_id, p_project_id)
+            ON CONFLICT DO NOTHING;
+            
+            RAISE NOTICE 'Volunteer % assigned to project %', vol_rec.first_name, proj_rec.project_name;
+        END IF;
+        
+    ELSIF action_type = 'REMOVE' THEN
+        -- הסרת מתנדב מפרויקט
+        IF p_project_id IS NULL THEN
+            -- הסרה מכל הפרויקטים
+            DELETE FROM volunteerProject WHERE volunteer_id = p_volunteer_id;
+            RAISE NOTICE 'Volunteer % removed from all projects', vol_rec.first_name;
+        ELSE
+            -- הסרה מפרויקט ספציפי
+            DELETE FROM volunteerProject 
+            WHERE volunteer_id = p_volunteer_id AND project_id = p_project_id;
+            RAISE NOTICE 'Volunteer % removed from project %', vol_rec.first_name, p_project_id;
+        END IF;
+        
+    ELSE
+        RAISE EXCEPTION 'Invalid action type: %. Use ADD or REMOVE', action_type;
+    END IF;
+    
+    COMMIT;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE NOTICE 'Error in project management: %', SQLERRM;
+END;
+$$ LANGUAGE plpgsql;
+```
+הרצה עם ADD:
+![image](https://github.com/user-attachments/assets/05dbcb31-9ac9-4fe2-a14c-7e891b8c8e46)
+
+הרצה עם REMOVE:
+![image](https://github.com/user-attachments/assets/ad657ac7-e576-4c5b-ac95-37242a13a297)
+
+
+
+### פרוצדורה 2: עדכון סטטוס ציוד רפואי עם דוח מפורט
+
+**תיאור מילולי:**
+פרוצדורה מתקדמת לעדכון אוטומטי של סטטוס ציוד רפואי על בסיס גיל הציוד ותדירות השימוש. הפרוצדורה מקבלת פרמטר עבור גיל מינימלי לבדיקה, עוברת על כל פריטי הציוד באמצעות Cursor, מחשבת סטטוס חדש לפי אלגוריתם מתוחכם, ומייצרת דוח מפורט של כל השינויים שבוצעו.
+
+**הקוד:**
+```sql
+-- ================================================
+-- פרוצדורה 2: עדכון סטטוס ציוד רפואי עם דוח מפורט
+-- ================================================
+CREATE OR REPLACE PROCEDURE update_equipment_status_report(
+    IN equipment_age_threshold INTEGER DEFAULT 5,
+    OUT updated_count INTEGER,
+    OUT report_text TEXT
+) AS $$
+DECLARE
+    equip_rec RECORD;
+    equip_cursor CURSOR FOR
+        SELECT equipment_id, equipment_name, destination_age, status
+        FROM medicalEquipment
+        WHERE destination_age >= equipment_age_threshold;
+    old_status VARCHAR;
+    new_status VARCHAR;
+    usage_count INTEGER;
+    report_lines TEXT[] := ARRAY[]::TEXT[];
+    total_updated INTEGER := 0;
+BEGIN
+    report_lines := array_append(report_lines, '=== Medical Equipment Status Update Report ===');
+    report_lines := array_append(report_lines, 'Date: ' || CURRENT_DATE);
+    report_lines := array_append(report_lines, 'Minimum age for inspection: ' || equipment_age_threshold || ' years');
+    report_lines := array_append(report_lines, '');
+    
+    -- לולאה על כל פריט ציוד
+    FOR equip_rec IN equip_cursor LOOP
+        old_status := equip_rec.status;
+        
+        -- בדיקת שימוש בציוד
+        SELECT COUNT(*) INTO usage_count
+        FROM useEquipment
+        WHERE equipment_id = equip_rec.equipment_id;
+        
+        -- קביעת סטטוס חדש לפי גיל ושימוש
+        IF equip_rec.destination_age >= 10 THEN
+            IF usage_count > 5 THEN
+                new_status := 'Urgent Maintenance Required';
+            ELSE
+                new_status := 'For Inspection';
+            END IF;
+        ELSIF equip_rec.destination_age >= 7 THEN
+            new_status := 'Preventive Maintenance';
+        ELSE
+            new_status := 'Active';
+        END IF;
+        
+        -- עדכון הסטטוס אם השתנה
+        IF old_status IS DISTINCT FROM new_status THEN
+            UPDATE medicalEquipment 
+            SET status = new_status 
+            WHERE equipment_id = equip_rec.equipment_id;
+            
+            total_updated := total_updated + 1;
+            
+            report_lines := array_append(report_lines, 
+                'Equipment: ' || equip_rec.equipment_name || 
+                ' (ID: ' || equip_rec.equipment_id || ')' ||
+                ' - Age: ' || equip_rec.destination_age || 
+                ' - Usage: ' || usage_count ||
+                ' - Status changed from "' || COALESCE(old_status, 'NULL') || 
+                '" to "' || new_status || '"');
+        END IF;
+    END LOOP;
+    
+    updated_count := total_updated;
+    
+    IF total_updated = 0 THEN
+        report_lines := array_append(report_lines, 'No updates required.');
+    ELSE
+        report_lines := array_append(report_lines, '');
+        report_lines := array_append(report_lines, 'Total equipment items updated: ' || total_updated);
+    END IF;
+    
+    report_text := array_to_string(report_lines, E'\n');
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        updated_count := -1;
+        report_text := 'Error updating equipment status: ' || SQLERRM;
+        ROLLBACK;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+---
+
+## 🚨 טריגרים
+
+### טריגר 1: בדיקות בהקצאת מתנדבים לפרויקטים
+
+**תיאור מילולי:**
+טריגר מתקדם הפועל לפני הוספה או עדכון בטבלת volunteerProject. הטריגר בודק ניגודי עניינים פוטנציאליים כמו השמה לפרוייקטים לא פעילים, עומס יתר של פרויקטים, חפיפות זמן בין פרויקטים. הטריגר מספק אזהרות למצבים פחות קריטיים וחוסם פעולות במצבים שעלולים לגרום לבעיות.
+
+**הקוד:**
+```sql
+-- ================================================
+-- טריגר 1: בדיקות בהקצאת מתנדבים לפרויקטים
+-- ================================================
+CREATE OR REPLACE FUNCTION check_volunteer_project_conflicts()
+RETURNS TRIGGER AS $$
+DECLARE
+    vol_rec RECORD;
+    project_rec RECORD;
+    existing_projects INTEGER;
+    manager_conflict BOOLEAN := FALSE;
+    date_overlap_count INTEGER := 0;
+    vol_skill VARCHAR;
+    required_skill VARCHAR;
+BEGIN
+    -- שליפת פרטי המתנדב
+    SELECT v.volunteer_id, v.skill, v.manager_id, p.first_name, p.last_name
+    INTO vol_rec
+    FROM volunteer v
+    JOIN person p ON v.volunteer_id = p.id
+    WHERE v.volunteer_id = NEW.volunteer_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Volunteer with ID % not found in system', NEW.volunteer_id;
+    END IF;
+
+    -- שליפת פרטי הפרויקט
+    SELECT project_id, project_name, description, start_date, end_date, manager_id
+    INTO project_rec
+    FROM project
+    WHERE project_id = NEW.project_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Project with ID % not found in system', NEW.project_id;
+    END IF;
+
+    -- בדיקה 1: האם הפרויקט עדיין פעיל?
+    IF project_rec.end_date < CURRENT_DATE THEN
+        RAISE EXCEPTION 'Cannot assign volunteer % to project % - project ended on %',
+                        vol_rec.first_name || ' ' || vol_rec.last_name,
+                        project_rec.project_name,
+                        project_rec.end_date;
+    END IF;
+
+    -- בדיקה 2: מספר פרויקטים מקסימלי למתנדב (5 פרויקטים)
+    SELECT COUNT(*) INTO existing_projects
+    FROM volunteerProject vp
+    JOIN project pr ON vp.project_id = pr.project_id
+    WHERE vp.volunteer_id = NEW.volunteer_id
+    AND pr.end_date >= CURRENT_DATE;
+
+    IF existing_projects >= 5 THEN
+        RAISE EXCEPTION 'Volunteer % already participates in % active projects (maximum 5)',
+                        vol_rec.first_name, existing_projects;
+    END IF;
+
+    -- בדיקה 3: חפיפה בתאריכי פרויקטים - בדיקת עומס זמן
+    SELECT COUNT(*) INTO date_overlap_count
+    FROM volunteerProject vp
+    JOIN project pr ON vp.project_id = pr.project_id
+    WHERE vp.volunteer_id = NEW.volunteer_id
+    AND pr.project_id != NEW.project_id
+    AND (
+        (pr.start_date BETWEEN project_rec.start_date AND project_rec.end_date) OR
+        (pr.end_date BETWEEN project_rec.start_date AND project_rec.end_date) OR
+        (project_rec.start_date BETWEEN pr.start_date AND pr.end_date)
+    );
+
+    IF date_overlap_count >= 3 THEN
+        RAISE EXCEPTION 'Volunteer % already participates in % overlapping projects with project % - excessive time load',
+                        vol_rec.first_name, date_overlap_count, project_rec.project_name;
+    ELSIF date_overlap_count >= 2 THEN
+        RAISE NOTICE 'Warning: volunteer % participates in % additional overlapping projects',
+                     vol_rec.first_name, date_overlap_count;
+    END IF;
+
+    -- רישום הקצאה מוצלחת
+    RAISE NOTICE 'Volunteer % successfully assigned to project % (period: % to %)',
+                vol_rec.first_name || ' ' || vol_rec.last_name,
+                project_rec.project_name,
+                project_rec.start_date,
+                project_rec.end_date;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER trg_check_volunteer_project_conflicts
+    BEFORE INSERT OR UPDATE ON volunteerProject
+    FOR EACH ROW
+    EXECUTE FUNCTION check_volunteer_project_conflicts();
+```
+הרצה - נסיון השמה לפרוייקט שהסתים:
+![image](https://github.com/user-attachments/assets/a5f08ff4-12d2-4bc4-a4eb-5ba497711f6e)
+
+הרצה - נסיון השמה מתנדב עם עומס:
+![image](https://github.com/user-attachments/assets/317628bf-61b2-440b-b91a-91ba85616d4a)
+
+
+ 
+
+### טריגר 2: רישום היסטוריה של שינויים במידע מטופלים
+
+**תיאור מילולי:**
+טריגר מקיף הפועל אחרי כל פעולת הוספה, עדכון או מחיקה בטבלת medicalRecord. הטריגר רושם את כל השינויים בטבלת היסטוריה נפרדת, כולל ערכים ישנים וחדשים. הטריגר גם מספק אזהרות אוטומטיות כאשר חומרת הפציעה של מטופל גדלה משמעותית, מה שעשוי לדרוש התערבות רפואית מיידית.
+
+**הקוד:**
+```sql
+-- ================================================
+-- טריגר 2: רישום היסטוריה של שינויים במידע מטופלים
+-- ================================================
+
+-- יצירת טבלת היסטוריה (ללא שינוי הטבלאות הקיימות)
+CREATE TABLE IF NOT EXISTS medical_record_history (
+    history_id SERIAL PRIMARY KEY,
+    record_id INTEGER,
+    patient_id INTEGER,
+    old_severity INTEGER,
+    new_severity INTEGER,
+    old_cause VARCHAR,
+    new_cause VARCHAR,
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    change_type VARCHAR
+);
+
+CREATE OR REPLACE FUNCTION log_medical_record_changes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'UPDATE' THEN
+        -- רישום שינויים
+        INSERT INTO medical_record_history (
+            record_id, patient_id, old_severity, new_severity,
+            old_cause, new_cause, change_type
+        ) VALUES (
+            OLD.record_id, OLD.patient_id, OLD.severity_of_injury, NEW.severity_of_injury,
+            OLD.cause_of_injury, NEW.cause_of_injury, 'UPDATE'
+        );
+        
+        -- בדיקת שינוי משמעותי בחומרת הפציעה
+        IF NEW.severity_of_injury > OLD.severity_of_injury + 2 THEN
+            RAISE NOTICE 'Warning: injury severity for patient % increased significantly from % to %', 
+                        OLD.patient_id, OLD.severity_of_injury, NEW.severity_of_injury;
+        END IF;
+        
+        RETURN NEW;
+        
+    ELSIF TG_OP = 'INSERT' THEN
+        INSERT INTO medical_record_history (
+            record_id, patient_id, new_severity, new_cause, change_type
+        ) VALUES (
+            NEW.record_id, NEW.patient_id, NEW.severity_of_injury, 
+            NEW.cause_of_injury, 'INSERT'
+        );
+        
+        RETURN NEW;
+        
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO medical_record_history (
+            record_id, patient_id, old_severity, old_cause, change_type
+        ) VALUES (
+            OLD.record_id, OLD.patient_id, OLD.severity_of_injury, 
+            OLD.cause_of_injury, 'DELETE'
+        );
+        
+        RETURN OLD;
+    END IF;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_medical_record_history
+    AFTER INSERT OR UPDATE OR DELETE ON medicalRecord
+    FOR EACH ROW
+    EXECUTE FUNCTION log_medical_record_changes();
+```
+
+---
+
+## 🔄 תוכניות ראשיות
+
+### תוכנית ראשית 1: דוח מתנדבים כולל ניהול פרויקטים
+
+**תיאור מילולי:**
+תוכנית ראשית מקיפה המבצעת ניתוח מלא של עומסי העבודה של מתנדבים וניהול אוטומטי של הקצאות פרויקטים. התוכנית קוראת לפונקציית חישוב עומס העבודה, מציגה דוח מפורט על כל המתנדבים, מזהה מתנדבים עם עומס גבוה, ומבצעת הקצאות אוטומטיות של פרויקטים נוספים למתנדבים עם עומס נמוך. התוכנית כוללת ניהול שגיאות מתקדם והדפסות מידעיות מפורטות.
+
+**הקוד:**
+```sql
+-- ================================================
+-- תוכנית ראשית 1: דוח מתנדבים כולל ניהול פרויקטים
+-- ================================================
+DO $$
+DECLARE
+    workload_cursor REFCURSOR;
+    workload_rec RECORD;
+    high_workload_volunteers INTEGER[] := ARRAY[]::INTEGER[];
+    vol_id INTEGER;
+BEGIN
+    RAISE NOTICE '=== Starting Volunteer Report ===';
+
+    -- קריאה לפונקציה לחישוב עומס עבודה
+    RAISE NOTICE 'Calculating workload for all volunteers...';
+
+    FOR workload_rec IN
+        SELECT * FROM calculate_volunteer_workload()
+        ORDER BY workload_score DESC
+    LOOP
+        RAISE NOTICE 'Volunteer: % | Workload Score: % | Category: % | Projects: % | Shifts: %',
+            workload_rec.volunteer_name,
+            workload_rec.workload_score,
+            workload_rec.workload_category,
+            workload_rec.projects_count,
+            workload_rec.shifts_count;
+
+        -- איסוף מתנדבים עם עומס גבוה
+        IF workload_rec.workload_category = 'עומס גבוה' THEN
+            high_workload_volunteers := array_append(high_workload_volunteers, workload_rec.volunteer_id);
+        END IF;
+    END LOOP;
+
+    -- ניהול פרויקטים למתנדבים עם עומס נמוך
+    RAISE NOTICE E'\n=== Managing Project Assignments ===';
+
+    -- הוספת מתנדבים עם עומס נמוך לפרויקטים נוספים
+    FOR workload_rec IN
+        SELECT * FROM calculate_volunteer_workload()
+        WHERE workload_category IN ('Minimal workload', 'Low workload')
+        LIMIT 3
+    LOOP
+        CALL manage_volunteer_projects('ADD', workload_rec.volunteer_id);
+    END LOOP;
+
+    RAISE NOTICE '=== End of Volunteer Report ===';
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Error in main program: %', SQLERRM;
+END;
+$$;
+```
+הרצה - לוג דיווח מתנדבים:
+![image](https://github.com/user-attachments/assets/7ac644c7-e90e-4fe4-b90c-c4df808940a7)
+הרצה - לוג ניהול הקצאות מתנדים לפרוייקטים:
+![image](https://github.com/user-attachments/assets/1ab8f194-81e1-423b-962a-95ba506abe51)
+
 
 
