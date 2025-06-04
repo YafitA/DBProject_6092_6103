@@ -1331,11 +1331,6 @@ CREATE OR REPLACE TRIGGER trg_check_volunteer_project_conflicts
 
 **הקוד:**
 ```sql
--- ================================================
--- טריגר 2: רישום היסטוריה של שינויים במידע מטופלים
--- ================================================
-
--- יצירת טבלת היסטוריה (ללא שינוי הטבלאות הקיימות)
 CREATE TABLE IF NOT EXISTS medical_record_history (
     history_id SERIAL PRIMARY KEY,
     record_id INTEGER,
@@ -1360,36 +1355,36 @@ BEGIN
             OLD.record_id, OLD.patient_id, OLD.severity_of_injury, NEW.severity_of_injury,
             OLD.cause_of_injury, NEW.cause_of_injury, 'UPDATE'
         );
-        
+
         -- בדיקת שינוי משמעותי בחומרת הפציעה
         IF NEW.severity_of_injury > OLD.severity_of_injury + 2 THEN
-            RAISE NOTICE 'Warning: injury severity for patient % increased significantly from % to %', 
+            RAISE NOTICE 'Warning: The severity of patient %''s injury has significantly increased from % to %',
                         OLD.patient_id, OLD.severity_of_injury, NEW.severity_of_injury;
         END IF;
-        
+
         RETURN NEW;
-        
+
     ELSIF TG_OP = 'INSERT' THEN
         INSERT INTO medical_record_history (
             record_id, patient_id, new_severity, new_cause, change_type
         ) VALUES (
-            NEW.record_id, NEW.patient_id, NEW.severity_of_injury, 
+            NEW.record_id, NEW.patient_id, NEW.severity_of_injury,
             NEW.cause_of_injury, 'INSERT'
         );
-        
+
         RETURN NEW;
-        
+
     ELSIF TG_OP = 'DELETE' THEN
         INSERT INTO medical_record_history (
             record_id, patient_id, old_severity, old_cause, change_type
         ) VALUES (
-            OLD.record_id, OLD.patient_id, OLD.severity_of_injury, 
+            OLD.record_id, OLD.patient_id, OLD.severity_of_injury,
             OLD.cause_of_injury, 'DELETE'
         );
-        
+
         RETURN OLD;
     END IF;
-    
+
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -1411,9 +1406,6 @@ CREATE TRIGGER trg_medical_record_history
 
 **הקוד:**
 ```sql
--- ================================================
--- תוכנית ראשית 1: דוח מתנדבים כולל ניהול פרויקטים
--- ================================================
 DO $$
 DECLARE
     workload_cursor REFCURSOR;
@@ -1476,10 +1468,10 @@ $$;
 ### תוכנית ראשית 2: דוח מטופלים ועדכון ציוד רפואי
 
 **תיאור מילולי:**
-תוכנית ראשית מקיפה המבצעת ניתוח מלא של עומסי העבודה של מתנדבים וניהול אוטומטי של הקצאות פרויקטים. התוכנית קוראת לפונקציית חישוב עומס העבודה, מציגה דוח מפורט על כל המתנדבים, מזהה מתנדבים עם עומס גבוה, ומבצעת הקצאות אוטומטיות של פרויקטים נוספים למתנדבים עם עומס נמוך. התוכנית כוללת ניהול שגיאות מתקדם והדפסות מידעיות מפורטות.
+תוכנית ראשית המציגה דו"ח מקיף על מטופלים פעילים וסטטוס ציוד רפואי. התוכנית קוראת לפונקציה שמחזירה רשימת מטופלים פעילים באמצעות REFCURSOR, מציגה פרטי פצעים, מתנדבים וטיפולים לכל מטופל, ומפעילה פרוצדורה לעדכון ומעקב אחרי מצב הציוד הרפואי. כוללת טיפול בשגיאות והדפסות מידעיות מפורטות לאורך כל התהליך.
 
 **הקוד:**
-תוכנית ראשית המציגה דו"ח מקיף על מטופלים פעילים וסטטוס ציוד רפואי. התוכנית קוראת לפונקציה שמחזירה רשימת מטופלים פעילים באמצעות REFCURSOR, מציגה פרטי פצעים, מתנדבים וטיפולים לכל מטופל, ומפעילה פרוצדורה לעדכון ומעקב אחרי מצב הציוד הרפואי. כוללת טיפול בשגיאות והדפסות מידעיות מפורטות לאורך כל התהליך.
+
 
 ```sql
 DO $$
