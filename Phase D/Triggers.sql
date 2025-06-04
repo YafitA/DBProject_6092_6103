@@ -37,7 +37,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_validate_volunteer_treatment
+CREATE OR REPLACE TRIGGER trg_validate_volunteer_treatment
     BEFORE INSERT OR UPDATE ON volunteerInTreatPlan
     FOR EACH ROW
     EXECUTE FUNCTION validate_volunteer_treatment_assignment();
