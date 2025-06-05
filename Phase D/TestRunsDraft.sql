@@ -7,7 +7,7 @@ DECLARE
     updated_count INTEGER;
     report_text TEXT;
 BEGIN
-    CALL update_equipment_status_report(updated_count, report_text);
+    CALL update_equipment_status_report(updated_count, report_text, 4);
 
     RAISE NOTICE 'num of opdated items: %', updated_count;
     RAISE NOTICE 'report: %', report_text;
