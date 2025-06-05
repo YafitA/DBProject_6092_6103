@@ -1106,13 +1106,17 @@ $$ LANGUAGE plpgsql;
 ![image](https://github.com/user-attachments/assets/ad657ac7-e576-4c5b-ac95-37242a13a297)
 
 *הרצה עם ADD - הוספת פרוייקט:*
+
 מספר הפרוייקטים לפני העדכון:
+
 ![image](https://github.com/user-attachments/assets/e1f8e263-1a63-45f1-8ae4-bc28e1c6f3e4)
 עדכון למתנדבת:
+
 
 ![image](https://github.com/user-attachments/assets/614bb0dc-1bdf-4c04-9fec-d99195990a68)
 
 מספר הפרוייקטים לאחר העדכון:
+
 ![image](https://github.com/user-attachments/assets/5d6b41b4-9cef-45e1-b9a0-02fa614ca571)
 
 
@@ -1208,7 +1212,8 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-הרצה:
+
+הרצה הקוד וההדפס:
 ```sql
 DO $$
 DECLARE
