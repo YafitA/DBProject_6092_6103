@@ -1110,6 +1110,7 @@ $$ LANGUAGE plpgsql;
 מספר הפרוייקטים לפני העדכון:
 
 ![image](https://github.com/user-attachments/assets/e1f8e263-1a63-45f1-8ae4-bc28e1c6f3e4)
+
 עדכון למתנדבת:
 
 
