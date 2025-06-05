@@ -852,9 +852,6 @@ GROUP BY treatment_type;
 
 **הקוד:**
 ```sql
--- ================================================
--- פונקציה 1: חישוב עומס עבודה של מתנדבים עם סטטיסטיקות
--- ================================================
 CREATE OR REPLACE FUNCTION calculate_volunteer_workload()
 RETURNS TABLE (
     volunteer_id INTEGER,
@@ -940,16 +937,13 @@ $$ LANGUAGE plpgsql;
 ![photo_5906829537226902241_y](https://github.com/user-attachments/assets/c29ed832-daae-43f2-a42d-abdbdb29de1b)
 
 
-### פונקציה 2: החזרת REF CURSOR למטופלים פעילים
+### פונקציה 2: החזרת REF CURSOR למטופלים 
 
 **תיאור מילולי:**
-פונקציה זו מחזירה REF CURSOR המכיל מידע על מטופלים פעילים במערכת. הפונקציה בודקת תחילה שקיימים מטופלים במערכת, ואז פותחת cursor עם שאילתה מורכבת הכוללת מידע רפואי ופרטי טיפול. הנתונים כוללים שם המטופל, חומרת הפציעה, סיבת הפציעה, מספר המתנדבים המטפלים וסוגי הטיפולים.
+פונקציה זו מחזירה REF CURSOR המכיל מידע על מטופלים במערכת. הפונקציה בודקת תחילה שקיימים מטופלים במערכת, ואז פותחת cursor עם שאילתה מורכבת הכוללת מידע רפואי ופרטי טיפול. הנתונים כוללים שם המטופל, חומרת הפציעה, סיבת הפציעה, מספר המתנדבים המטפלים וסוגי הטיפולים.
 
 **הקוד:**
 ```sql
--- ================================================
--- פונקציה 2: החזרת REF CURSOR למטופלים פעילים
--- ================================================
 CREATE OR REPLACE FUNCTION get_active_patients_cursor()
 RETURNS REFCURSOR AS $$
 DECLARE
@@ -1005,18 +999,12 @@ $$ LANGUAGE plpgsql;
 
 **הקוד:**
 ```sql
--- ================================================
--- פרוצדורה 1: ניהול פרויקטים - הקצאה והסרה אוטומטית
--- ================================================
 CREATE OR REPLACE PROCEDURE manage_volunteer_projects(
     IN action_type VARCHAR,
     IN p_volunteer_id INTEGER,
-![Uploading photo_5906829537226902246_y.jpg…]()
     IN p_project_id INTEGER DEFAULT NULL
-) AS $$![Uploading photo_5906829537226902246_y.jpg…]()
-
-DECLARE![Uploading photo_5906829537226902246_y.jpg…]()
-
+) AS $$
+DECLARE
     vol_rec RECORD;
     proj_rec RECORD;
     current_projects INTEGER;
@@ -1030,11 +1018,11 @@ BEGIN
     FROM volunteer v
     JOIN person p ON v.volunteer_id = p.id
     WHERE v.volunteer_id = p_volunteer_id;
-    
+
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Volunteer with ID % not found', p_volunteer_id;
     END IF;
-    
+
     -- בדיקת סוג הפעולה
     IF action_type = 'ADD' THEN
         -- הוספת מתנדב לפרויקט
@@ -1043,7 +1031,7 @@ BEGIN
             SELECT COUNT(*) INTO current_projects
             FROM volunteerProject
             WHERE volunteer_id = p_volunteer_id;
-            
+
             -- אם למתנדב יש פחות מ-3 פרויקטים, חפש פרויקט מתאים
             IF current_projects < 3 THEN
                 -- מציאת פרויקטים פעילים שהמתנדב לא משתתף בהם
@@ -1051,58 +1039,56 @@ BEGIN
                 FROM project pr
                 WHERE pr.end_date > CURRENT_DATE
                 AND pr.project_id NOT IN (
-                    SELECT vp.project_id 
-                    FROM volunteerProject vp 
+                    SELECT vp.project_id
+                    FROM volunteerProject vp
                     WHERE vp.volunteer_id = p_volunteer_id
                 );
-                
+
                 IF array_length(suitable_projects, 1) > 0 THEN
                     selected_project := suitable_projects[1];
-                    
+
                     INSERT INTO volunteerProject (volunteer_id, project_id)
                     VALUES (p_volunteer_id, selected_project);
-                    
-                    RAISE NOTICE 'Volunteer % assigned to project %', vol_rec.first_name || ' ' || vol_rec.last_name, selected_project;
+
+                    RAISE NOTICE 'Volunteer % was assigned to project %', vol_rec.first_name || ' ' || vol_rec.last_name, selected_project;
                 ELSE
-                    RAISE NOTICE 'No suitable projects found for volunteer %', vol_rec.first_name;
+                    RAISE NOTICE 'o suitable projects found for volunteer %', vol_rec.first_name;
                 END IF;
             ELSE
-                RAISE NOTICE 'Volunteer % already participates in % projects (maximum 3)', vol_rec.first_name, current_projects;
+                RAISE NOTICE 'Volunteer % is already assigned to % projects (maximum is 3)', vol_rec.first_name, current_projects;
             END IF;
         ELSE
             -- הוספה לפרויקט ספציפי
             SELECT * INTO proj_rec FROM project WHERE project_id = p_project_id;
-            
+
             IF NOT FOUND THEN
                 RAISE EXCEPTION 'Project with ID % not found', p_project_id;
             END IF;
-            
+
             INSERT INTO volunteerProject (volunteer_id, project_id)
             VALUES (p_volunteer_id, p_project_id)
             ON CONFLICT DO NOTHING;
-            
-            RAISE NOTICE 'Volunteer % assigned to project %', vol_rec.first_name, proj_rec.project_name;
+
+            RAISE NOTICE 'Volunteer % was assigned to project %', vol_rec.first_name, proj_rec.project_name;
         END IF;
-        
+
     ELSIF action_type = 'REMOVE' THEN
         -- הסרת מתנדב מפרויקט
         IF p_project_id IS NULL THEN
             -- הסרה מכל הפרויקטים
             DELETE FROM volunteerProject WHERE volunteer_id = p_volunteer_id;
-            RAISE NOTICE 'Volunteer % removed from all projects', vol_rec.first_name;
+            RAISE NOTICE 'Volunteer % was removed from all projects', vol_rec.first_name;
         ELSE
             -- הסרה מפרויקט ספציפי
-            DELETE FROM volunteerProject 
+            DELETE FROM volunteerProject
             WHERE volunteer_id = p_volunteer_id AND project_id = p_project_id;
-            RAISE NOTICE 'Volunteer % removed from project %', vol_rec.first_name, p_project_id;
+            RAISE NOTICE 'Volunteer % was removed from project %', vol_rec.first_name, p_project_id;
         END IF;
-        
+
     ELSE
         RAISE EXCEPTION 'Invalid action type: %. Use ADD or REMOVE', action_type;
     END IF;
-    
-    COMMIT;
-    
+
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
@@ -1110,14 +1096,26 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 ```
-הרצה עם ADD:
+הרצה עם ADD - למתנדב עם יותר מ3 פרוייקטים - זריקת חריגה:
 
 ![image](https://github.com/user-attachments/assets/05dbcb31-9ac9-4fe2-a14c-7e891b8c8e46)
 
 
-הרצה עם REMOVE:
+הרצה עם REMOVE - למתנדב שאינו קיים - זריקת חריגה:
 
 ![image](https://github.com/user-attachments/assets/ad657ac7-e576-4c5b-ac95-37242a13a297)
+
+*הרצה עם ADD - הוספת פרוייקט:*
+מספר הפרוייקטים לפני העדכון:
+![image](https://github.com/user-attachments/assets/e1f8e263-1a63-45f1-8ae4-bc28e1c6f3e4)
+עדכון למתנדבת:
+
+![image](https://github.com/user-attachments/assets/614bb0dc-1bdf-4c04-9fec-d99195990a68)
+
+מספר הפרוייקטים לאחר העדכון:
+![image](https://github.com/user-attachments/assets/5d6b41b4-9cef-45e1-b9a0-02fa614ca571)
+
+
 
 
 
@@ -1128,9 +1126,6 @@ $$ LANGUAGE plpgsql;
 
 **הקוד:**
 ```sql
--- ================================================
--- פרוצדורה 2: עדכון סטטוס ציוד רפואי עם דוח מפורט
--- ================================================
 CREATE OR REPLACE PROCEDURE update_equipment_status_report(
     IN equipment_age_threshold INTEGER DEFAULT 5,
     OUT updated_count INTEGER,
@@ -1213,6 +1208,31 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
+הרצה:
+```sql
+DO $$
+DECLARE
+    updated_count INTEGER;
+    report_text TEXT;
+BEGIN
+    CALL update_equipment_status_report(updated_count, report_text, 4);
+
+    RAISE NOTICE 'num of opdated items: %', updated_count;
+    RAISE NOTICE 'report: %', report_text;
+END;
+$$;
+```
+![image](https://github.com/user-attachments/assets/864bdbc8-3aa1-450a-af2c-305d62454c1f)
+מסד הנתונים לפני העדכון:
+![image](https://github.com/user-attachments/assets/944f569e-f016-4d4a-bba4-9017abf39d25)
+
+מסד הנתונים אחרי העדכון:
+![image](https://github.com/user-attachments/assets/45b89e79-a77e-4dc5-a798-a97453ed2f38)
+
+
+
+
+
 ---
 
 ## 🚨 טריגרים
@@ -1224,9 +1244,6 @@ $$ LANGUAGE plpgsql;
 
 **הקוד:**
 ```sql
--- ================================================
--- טריגר 1: בדיקות בהקצאת מתנדבים לפרויקטים
--- ================================================
 CREATE OR REPLACE FUNCTION check_volunteer_project_conflicts()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -1315,11 +1332,22 @@ CREATE OR REPLACE TRIGGER trg_check_volunteer_project_conflicts
     FOR EACH ROW
     EXECUTE FUNCTION check_volunteer_project_conflicts();
 ```
-הרצה - נסיון השמה לפרוייקט שהסתים:
+הרצה - נסיון השמה לפרוייקט שהסתים - זריקת חריגה:
 ![image](https://github.com/user-attachments/assets/a5f08ff4-12d2-4bc4-a4eb-5ba497711f6e)
+מסד הנתונים לפני ואחרי ההרצה - נותר ללא שינוי :
 
-הרצה - נסיון השמה מתנדב עם עומס:
+![image](https://github.com/user-attachments/assets/16f1ba5e-f326-4cba-a624-f4c23e06db6e)
+
+
+הרצה - נסיון השמה מתנדב עם עומס - זריקת חריגה:
 ![image](https://github.com/user-attachments/assets/317628bf-61b2-440b-b91a-91ba85616d4a)
+
+מסד הנתונים לפני ואחרי ההרצה - נותר ללא שינוי :
+
+![image](https://github.com/user-attachments/assets/420fcb33-c6d2-4240-a526-2d7647116334)
+
+
+
 
 
  
@@ -1394,6 +1422,18 @@ CREATE TRIGGER trg_medical_record_history
     FOR EACH ROW
     EXECUTE FUNCTION log_medical_record_changes();
 ```
+דוגמת הרצה - INSERT:
+
+![image](https://github.com/user-attachments/assets/e1af5a23-e83c-4a10-b5e7-a7fad1ac5b9a)
+
+דוגמת הרצה - UPDATE:
+
+![image](https://github.com/user-attachments/assets/e4b1bad8-10f1-4d46-ab1f-362bfa9b03f2)
+דוגמת הרצה - DELETE:
+
+![image](https://github.com/user-attachments/assets/05ec6c6d-7f44-4916-ae40-1ce9ad08c5a7)
+
+
 
 ---
 
@@ -1520,3 +1560,12 @@ EXCEPTION
 END;
 $$;
 ```
+
+הרצה - לוג דוח מטופלים:
+
+![image](https://github.com/user-attachments/assets/f23e6c24-a752-4e61-9ccb-5eb3b7a86d80)
+הרצה - לוג דוח ציוד רפואי:
+
+![image](https://github.com/user-attachments/assets/55c3d259-cd4f-4020-b6f3-ace3984c3046)
+
+
