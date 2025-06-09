@@ -1476,7 +1476,7 @@ BEGIN
             workload_rec.shifts_count;
 
         -- איסוף מתנדבים עם עומס גבוה
-        IF workload_rec.workload_category = 'עומס גבוה' THEN
+        IF workload_rec.workload_category = 'High workload' THEN
             high_workload_volunteers := array_append(high_workload_volunteers, workload_rec.volunteer_id);
         END IF;
     END LOOP;
