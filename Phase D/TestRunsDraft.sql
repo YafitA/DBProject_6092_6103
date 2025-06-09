@@ -1,3 +1,11 @@
+-- בדיקת פונקציה 1
+SELECT * FROM calculate_volunteer_workload();
+
+-- בדיקת פונקציה 2
+SELECT get_active_patients_cursor();
+FETCH ALL FROM active_patients_cur;
+
+
 -- בדיקת פרוצדורה 1
 CALL manage_volunteer_projects('ADD', 1);
 
@@ -15,9 +23,6 @@ END;
 $$;
 
 -- בדיקת טריגר 1:
-
-
-
 
 
 
