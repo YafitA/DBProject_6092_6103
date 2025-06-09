@@ -134,18 +134,15 @@ BEGIN
         FROM useEquipment
         WHERE equipment_id = equip_rec.equipment_id;
 
-        -- קביעת סטטוס חדש לפי גיל ושימוש
-        IF equip_rec.destination_age >= 10 THEN
-            IF usage_count > 5 THEN
-                new_status := 'Urgent';
-            ELSE
-                new_status := 'For Check';
-            END IF;
-        ELSIF equip_rec.destination_age >= 7 THEN
-            new_status := 'Maintenance';
+        -- קביעת סטטוס חדש לפי שימוש
+        IF usage_count > 5 THEN
+                new_status := 'Urgent Maintenance';
+        ELSIF usage_count >= 3 THEN
+              new_status := 'Maintenance';
         ELSE
             new_status := 'Active';
         END IF;
+
 
         -- עדכון הסטטוס אם השתנה
         IF old_status IS DISTINCT FROM new_status THEN
