@@ -1,8 +1,7 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog
+from tkinter import ttk, messagebox
 import psycopg2
 from datetime import datetime
-import threading
 
 
 class DatabaseGUI:
