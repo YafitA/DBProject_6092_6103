@@ -114,7 +114,7 @@ class DatabaseGUI:
             ("Person Management", self.person_management, '#e74c3c'),
             ("Volunteer Management", self.volunteer_management, '#f39c12'),
             ("Project Management", self.project_management, '#8e44ad'),
-            ("Volunteer-Project Assignment", self.volunteer_project_management, '#1abc9c'),
+            ("Volunteers In Projects", self.volunteer_project_management, '#1abc9c'),
             ("Reports & Queries", self.reports_queries, '#3498db'),
             ("Exit", self.root.quit, '#95a5a6')
         ]
@@ -622,8 +622,8 @@ class DatabaseGUI:
             ("Volunteers by Type", self.query_volunteers_by_type),
             ("Patients with Equipment", self.query_patients_equipment),
             ("Active Projects", self.query_active_projects),
-            ("Volunteers per Project", self.query_volunteers_per_project),
-            ("Projects by Volunteer", self.query_projects_by_volunteer),
+            ("Project Details Report", self.query_project_details),
+            ("Volunteers Full Report", self.query_volunteers_full_report),
             ("Volunteer Training Report", self.procedure_volunteer_training),
             ("Patient Statistics", self.procedure_patient_stats)
         ]
@@ -639,10 +639,29 @@ class DatabaseGUI:
                                       font=('Arial', 12, 'bold'))
         results_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-        # Results text area with scrollbar
-        text_frame = tk.Frame(results_frame)
-        text_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        # Create notebook for tabs (table view and text view)
+        self.results_notebook = ttk.Notebook(results_frame)
+        self.results_notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
+        # Table view tab
+        table_frame = tk.Frame(self.results_notebook)
+        self.results_notebook.add(table_frame, text="Table View")
+
+        # Create treeview for table results (will be configured dynamically)
+        self.results_tree = ttk.Treeview(table_frame, show='headings')
+        table_scrollbar_y = ttk.Scrollbar(table_frame, orient=tk.VERTICAL, command=self.results_tree.yview)
+        table_scrollbar_x = ttk.Scrollbar(table_frame, orient=tk.HORIZONTAL, command=self.results_tree.xview)
+        self.results_tree.configure(yscrollcommand=table_scrollbar_y.set, xscrollcommand=table_scrollbar_x.set)
+
+        self.results_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        table_scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
+        table_scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
+
+        # Text view tab
+        text_frame = tk.Frame(self.results_notebook)
+        self.results_notebook.add(text_frame, text="Text View")
+
+        # Results text area with scrollbar
         self.results_text = tk.Text(text_frame, font=('Courier', 10), wrap=tk.WORD)
         results_scrollbar = tk.Scrollbar(text_frame, orient=tk.VERTICAL, command=self.results_text.yview)
         self.results_text.configure(yscrollcommand=results_scrollbar.set)
@@ -705,75 +724,6 @@ class DatabaseGUI:
                 output += f"Treatment Type: {row[2]}\n"
                 output += f"Status: {row[3]}\n"
                 output += "-" * 30 + "\n"
-
-            self.display_results(output)
-
-        except Exception as e:
-            messagebox.showerror("Error", f"Query failed: {str(e)}")
-
-    def query_volunteers_per_project(self):
-        """שאילתה: מתנדבים לפי פרויקט"""
-        try:
-            cursor = self.connection.cursor()
-            query = """
-            SELECT proj.project_name, 
-                   COUNT(vp.volunteer_id) as volunteer_count,
-                   STRING_AGG(CONCAT(p.first_name, ' ', p.last_name), ', ') as volunteers,
-                   proj.start_date, proj.end_date
-            FROM project proj
-            LEFT JOIN volunteerProject vp ON proj.project_id = vp.project_id
-            LEFT JOIN volunteer v ON vp.volunteer_id = v.volunteer_id
-            LEFT JOIN person p ON v.volunteer_id = p.id
-            GROUP BY proj.project_id, proj.project_name, proj.start_date, proj.end_date
-            ORDER BY volunteer_count DESC, proj.project_name
-            """
-            cursor.execute(query)
-            results = cursor.fetchall()
-
-            output = "VOLUNTEERS PER PROJECT REPORT\n"
-            output += "=" * 50 + "\n\n"
-
-            for row in results:
-                output += f"Project: {row[0]}\n"
-                output += f"Volunteer Count: {row[1]}\n"
-                output += f"Start Date: {row[3]}\n"
-                output += f"End Date: {row[4] if row[4] else 'Ongoing'}\n"
-                output += f"Volunteers: {row[2] if row[2] else 'None assigned'}\n"
-                output += "-" * 40 + "\n"
-
-            self.display_results(output)
-
-        except Exception as e:
-            messagebox.showerror("Error", f"Query failed: {str(e)}")
-
-    def query_projects_by_volunteer(self):
-        """שאילתה: פרויקטים לפי מתנדב"""
-        try:
-            cursor = self.connection.cursor()
-            query = """
-            SELECT CONCAT(p.first_name, ' ', p.last_name) as volunteer_name,
-                   COUNT(vp.project_id) as project_count,
-                   STRING_AGG(proj.project_name, ', ') as projects,
-                   v.skill
-            FROM volunteer v
-            JOIN person p ON v.volunteer_id = p.id
-            LEFT JOIN volunteerProject vp ON v.volunteer_id = vp.volunteer_id
-            LEFT JOIN project proj ON vp.project_id = proj.project_id
-            GROUP BY v.volunteer_id, p.first_name, p.last_name, v.skill
-            ORDER BY project_count DESC, volunteer_name
-            """
-            cursor.execute(query)
-            results = cursor.fetchall()
-
-            output = "PROJECTS BY VOLUNTEER REPORT\n"
-            output += "=" * 50 + "\n\n"
-
-            for row in results:
-                output += f"Volunteer: {row[0]}\n"
-                output += f"Skill: {row[3] if row[3] else 'Not specified'}\n"
-                output += f"Project Count: {row[1]}\n"
-                output += f"Projects: {row[2] if row[2] else 'None assigned'}\n"
-                output += "-" * 40 + "\n"
 
             self.display_results(output)
 
@@ -900,6 +850,96 @@ class DatabaseGUI:
         """הצגת תוצאות השאילתה"""
         self.results_text.delete(1.0, tk.END)
         self.results_text.insert(1.0, text)
+        # Switch to text view
+        self.results_notebook.select(1)
+
+    def display_table_results(self, columns, data, title="Query Results"):
+        """הצגת תוצאות בטבלה"""
+        # Clear existing columns and data
+        for col in self.results_tree['columns']:
+            self.results_tree.heading(col, text="")
+        for item in self.results_tree.get_children():
+            self.results_tree.delete(item)
+
+        # Configure new columns
+        self.results_tree['columns'] = columns
+        for col in columns:
+            self.results_tree.heading(col, text=col)
+            self.results_tree.column(col, width=150, anchor='center')
+
+        # Insert data
+        for row in data:
+            self.results_tree.insert('', 'end', values=row)
+
+        # Switch to table view
+        self.results_notebook.select(0)
+
+    def query_project_details(self):
+        """שאילתה: פרטי פרויקטים מפורטים"""
+        try:
+            cursor = self.connection.cursor()
+            query = """
+            SELECT
+                p.project_name,
+                p.description,
+                CONCAT(pe.first_name, ' ', pe.last_name) AS manager_name,
+                p.start_date,
+                p.end_date,
+                (p.end_date - p.start_date) AS duration_days,
+                CASE
+                    WHEN CURRENT_DATE < p.start_date THEN 'Not Started'
+                    WHEN CURRENT_DATE BETWEEN p.start_date AND p.end_date THEN 'Active'
+                    ELSE 'Closed'
+                END AS status,
+                COUNT(vp.volunteer_id) AS volunteer_count
+            FROM project p
+            JOIN worker w ON p.manager_id = w.worker_id
+            JOIN person pe ON w.worker_id = pe.id
+            LEFT JOIN volunteerProject vp ON p.project_id = vp.project_id
+            GROUP BY
+                p.project_id, p.project_name, p.description, p.start_date, p.end_date, pe.first_name, pe.last_name
+            ORDER BY p.start_date DESC
+            """
+            cursor.execute(query)
+            results = cursor.fetchall()
+
+            columns = ['Project Name', 'Description', 'Manager', 'Start Date', 'End Date',
+                       'Duration (Days)', 'Status', 'Volunteer Count']
+
+            self.display_table_results(columns, results, "Project Details Report")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Query failed: {str(e)}")
+
+    def query_volunteers_full_report(self):
+        """שאילתה: דוח מתנדבים מלא"""
+        try:
+            cursor = self.connection.cursor()
+            query = """
+            SELECT
+                v.volunteer_id,
+                CONCAT(p.first_name, ' ', p.last_name) AS full_name,
+                vt.type_name AS volunteer_type,
+                CONCAT(mp.first_name, ' ', mp.last_name) AS manager_name,
+                COUNT(vp.project_id) AS num_of_projects
+            FROM volunteer v
+            JOIN person p ON v.volunteer_id = p.id
+            JOIN volunteerType vt ON v.volunteer_type_id = vt.volunteer_type_id
+            JOIN worker w ON v.manager_id = w.worker_id
+            JOIN person mp ON w.worker_id = mp.id
+            LEFT JOIN volunteerProject vp ON v.volunteer_id = vp.volunteer_id
+            GROUP BY v.volunteer_id, p.first_name, p.last_name, vt.type_name, mp.first_name, mp.last_name
+            ORDER BY v.volunteer_id
+            """
+            cursor.execute(query)
+            results = cursor.fetchall()
+
+            columns = ['Volunteer ID', 'Full Name', 'Volunteer Type', 'Manager Name', 'Number of Projects']
+
+            self.display_table_results(columns, results, "Volunteers Full Report")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Query failed: {str(e)}")
 
 
 def main():
