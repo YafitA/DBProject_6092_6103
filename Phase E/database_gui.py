@@ -113,18 +113,21 @@ class DatabaseGUI:
         buttons = [
             ("Person Management", self.person_management, '#e74c3c'),
             ("Volunteer Management", self.volunteer_management, '#f39c12'),
-            ("Patient Management", self.patient_management, '#27ae60'),
             ("Project Management", self.project_management, '#8e44ad'),
+            ("Volunteer-Project Assignment", self.volunteer_project_management, '#1abc9c'),
             ("Reports & Queries", self.reports_queries, '#3498db'),
             ("Exit", self.root.quit, '#95a5a6')
         ]
 
-        # Create buttons in 2x3 grid
+        # Create buttons in 2x4 grid (accounting for 7 buttons)
         for i, (text, command, color) in enumerate(buttons):
             btn = tk.Button(buttons_frame, text=text, font=('Arial', 14, 'bold'),
                             bg=color, fg='white', width=20, height=3,
                             command=command, relief=tk.RAISED, bd=3)
-            btn.grid(row=i // 2, column=i % 2, padx=20, pady=20)
+            if i < 6:  # First 6 buttons in 2x3 grid
+                btn.grid(row=i // 2, column=i % 2, padx=20, pady=20)
+            else:  # Exit button centered below
+                btn.grid(row=3, column=0, columnspan=2, padx=20, pady=20)
 
     def person_management(self):
         """ניהול אנשים - CRUD operations"""
@@ -133,11 +136,11 @@ class DatabaseGUI:
             ("ID", "id"),
             ("First Name", "first_name"),
             ("Last Name", "last_name"),
-            ("Gender", "gender"),
-            ("Birth Date", "birth_date"),
-            ("Address", "address"),
+            ("Email", "email_address"),
             ("Phone", "phone_number"),
-            ("Email", "email_address")
+            ("Address", "address"),
+            ("Birth Date", "birth_date"),
+            ("Gender", "gender")
         ])
 
     def volunteer_management(self):
@@ -146,16 +149,234 @@ class DatabaseGUI:
         self.create_crud_screen("Volunteer", "volunteer", [
             ("Volunteer ID", "volunteer_id"),
             ("Skill", "skill"),
-            ("Volunteer Type ID", "volunteer_type_id"),
-            ("Manager ID", "manager_id")
+            ("Manager ID", "manager_id"),
+            ("Volunteer Type ID", "volunteer_type_id")
         ])
 
-    def patient_management(self):
-        """ניהול מטופלים"""
+    def volunteer_project_management(self):
+        """ניהול הקצאת מתנדבים לפרויקטים"""
         self.clear_screen()
-        self.create_crud_screen("Patient", "patient", [
-            ("Patient ID", "patient_id")
-        ])
+
+        # Header
+        header_frame = tk.Frame(self.root, bg='#2c3e50')
+        header_frame.pack(fill=tk.X, pady=(0, 20))
+
+        tk.Label(header_frame, text="Volunteer-Project Assignment",
+                 font=('Arial', 18, 'bold'), fg='white', bg='#2c3e50').pack(pady=15)
+
+        back_btn = tk.Button(header_frame, text="← Back to Main Menu",
+                             command=self.create_main_menu, bg='#e74c3c', fg='white')
+        back_btn.pack(anchor='ne', padx=20, pady=5)
+
+        # Main container
+        main_container = tk.Frame(self.root)
+        main_container.pack(fill=tk.BOTH, expand=True, padx=20)
+
+        # Left panel - Assignment form
+        form_frame = tk.LabelFrame(main_container, text="Assign Volunteer to Project",
+                                   font=('Arial', 12, 'bold'), padx=20, pady=20)
+        form_frame.pack(side=tk.LEFT, fill=tk.Y, padx=(0, 10))
+
+        # Volunteer selection
+        tk.Label(form_frame, text="Select Volunteer:", font=('Arial', 10, 'bold')).grid(row=0, column=0, sticky='w',
+                                                                                        pady=5)
+        self.volunteer_var = tk.StringVar()
+        self.volunteer_combo = ttk.Combobox(form_frame, textvariable=self.volunteer_var, width=25, state='readonly')
+        self.volunteer_combo.grid(row=1, column=0, pady=5, padx=5)
+
+        # Project selection
+        tk.Label(form_frame, text="Select Project:", font=('Arial', 10, 'bold')).grid(row=2, column=0, sticky='w',
+                                                                                      pady=5)
+        self.project_var = tk.StringVar()
+        self.project_combo = ttk.Combobox(form_frame, textvariable=self.project_var, width=25, state='readonly')
+        self.project_combo.grid(row=3, column=0, pady=5, padx=5)
+
+        # Load dropdown data
+        self.load_volunteer_project_dropdowns()
+
+        # Buttons
+        btn_frame = tk.Frame(form_frame)
+        btn_frame.grid(row=4, column=0, pady=20)
+
+        tk.Button(btn_frame, text="Assign", bg='#1abc9c', fg='white',
+                  command=self.assign_volunteer_to_project).pack(side=tk.LEFT, padx=5)
+        tk.Button(btn_frame, text="Remove Assignment", bg='#e74c3c', fg='white',
+                  command=self.remove_volunteer_from_project).pack(side=tk.LEFT, padx=5)
+        tk.Button(btn_frame, text="Refresh", bg='#95a5a6', fg='white',
+                  command=self.refresh_volunteer_project_data).pack(side=tk.LEFT, padx=5)
+
+        # Right panel - Current assignments
+        data_frame = tk.LabelFrame(main_container, text="Current Assignments",
+                                   font=('Arial', 12, 'bold'))
+        data_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+
+        # Treeview for assignments
+        columns = ['volunteer_id', 'volunteer_name', 'project_id', 'project_name']
+        self.vp_tree = ttk.Treeview(data_frame, columns=columns, show='headings', height=20)
+
+        # Configure columns
+        self.vp_tree.heading('volunteer_id', text='Vol. ID')
+        self.vp_tree.heading('volunteer_name', text='Volunteer Name')
+        self.vp_tree.heading('project_id', text='Proj. ID')
+        self.vp_tree.heading('project_name', text='Project Name')
+
+        self.vp_tree.column('volunteer_id', width=80)
+        self.vp_tree.column('volunteer_name', width=150)
+        self.vp_tree.column('project_id', width=80)
+        self.vp_tree.column('project_name', width=200)
+
+        # Scrollbar for assignments tree
+        vp_scrollbar = ttk.Scrollbar(data_frame, orient=tk.VERTICAL, command=self.vp_tree.yview)
+        self.vp_tree.configure(yscrollcommand=vp_scrollbar.set)
+
+        self.vp_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
+        vp_scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=10)
+
+        # Bind selection to load into form
+        self.vp_tree.bind('<Double-1>', lambda e: self.load_selected_assignment())
+
+        # Load initial data
+        self.refresh_volunteer_project_data()
+
+    def load_volunteer_project_dropdowns(self):
+        """טעינת הנתונים לרשימות הנפתחות"""
+        try:
+            cursor = self.connection.cursor()
+
+            # Load volunteers
+            volunteer_query = """
+            SELECT v.volunteer_id, CONCAT(p.first_name, ' ', p.last_name) as name
+            FROM volunteer v
+            JOIN person p ON v.volunteer_id = p.id
+            ORDER BY p.first_name, p.last_name
+            """
+            cursor.execute(volunteer_query)
+            volunteers = cursor.fetchall()
+            volunteer_options = [f"{row[0]} - {row[1]}" for row in volunteers]
+            self.volunteer_combo['values'] = volunteer_options
+
+            # Load projects
+            project_query = """
+            SELECT project_id, project_name
+            FROM project
+            ORDER BY project_name
+            """
+            cursor.execute(project_query)
+            projects = cursor.fetchall()
+            project_options = [f"{row[0]} - {row[1]}" for row in projects]
+            self.project_combo['values'] = project_options
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load dropdown data: {str(e)}")
+
+    def assign_volunteer_to_project(self):
+        """הקצאת מתנדב לפרויקט"""
+        try:
+            volunteer_selection = self.volunteer_var.get()
+            project_selection = self.project_var.get()
+
+            if not volunteer_selection or not project_selection:
+                messagebox.showwarning("Warning", "Please select both volunteer and project")
+                return
+
+            # Extract IDs from selections
+            volunteer_id = int(volunteer_selection.split(' - ')[0])
+            project_id = int(project_selection.split(' - ')[0])
+
+            cursor = self.connection.cursor()
+
+            # Check if assignment already exists
+            check_query = "SELECT COUNT(*) FROM volunteerProject WHERE volunteer_id = %s AND project_id = %s"
+            cursor.execute(check_query, (volunteer_id, project_id))
+
+            if cursor.fetchone()[0] > 0:
+                messagebox.showwarning("Warning", "This volunteer is already assigned to this project")
+                return
+
+            # Insert new assignment
+            insert_query = "INSERT INTO volunteerProject (volunteer_id, project_id) VALUES (%s, %s)"
+            cursor.execute(insert_query, (volunteer_id, project_id))
+            self.connection.commit()
+
+            messagebox.showinfo("Success", "Volunteer assigned to project successfully!")
+            self.refresh_volunteer_project_data()
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to assign volunteer: {str(e)}")
+            self.connection.rollback()
+
+    def remove_volunteer_from_project(self):
+        """הסרת מתנדב מפרויקט"""
+        try:
+            selection = self.vp_tree.selection()
+            if not selection:
+                messagebox.showwarning("Warning", "Please select an assignment to remove")
+                return
+
+            item = self.vp_tree.item(selection[0])
+            values = item['values']
+            volunteer_id = values[0]
+            project_id = values[2]
+
+            if messagebox.askyesno("Confirm Remove",
+                                   f"Remove volunteer {values[1]} from project {values[3]}?"):
+                cursor = self.connection.cursor()
+                delete_query = "DELETE FROM volunteerProject WHERE volunteer_id = %s AND project_id = %s"
+                cursor.execute(delete_query, (volunteer_id, project_id))
+                self.connection.commit()
+
+                messagebox.showinfo("Success", "Assignment removed successfully!")
+                self.refresh_volunteer_project_data()
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to remove assignment: {str(e)}")
+            self.connection.rollback()
+
+    def load_selected_assignment(self):
+        """טעינת ההקצאה הנבחרת לטופס"""
+        selection = self.vp_tree.selection()
+        if selection:
+            item = self.vp_tree.item(selection[0])
+            values = item['values']
+
+            # Set dropdown selections
+            volunteer_text = f"{values[0]} - {values[1]}"
+            project_text = f"{values[2]} - {values[3]}"
+
+            self.volunteer_var.set(volunteer_text)
+            self.project_var.set(project_text)
+
+    def refresh_volunteer_project_data(self):
+        """רענון נתוני ההקצאות"""
+        try:
+            cursor = self.connection.cursor()
+            query = """
+            SELECT vp.volunteer_id, 
+                   CONCAT(p1.first_name, ' ', p1.last_name) as volunteer_name,
+                   vp.project_id, 
+                   proj.project_name
+            FROM volunteerProject vp
+            JOIN volunteer v ON vp.volunteer_id = v.volunteer_id
+            JOIN person p1 ON v.volunteer_id = p1.id
+            JOIN project proj ON vp.project_id = proj.project_id
+            ORDER BY volunteer_name, proj.project_name
+            """
+            cursor.execute(query)
+            records = cursor.fetchall()
+
+            # Clear existing data
+            for item in self.vp_tree.get_children():
+                self.vp_tree.delete(item)
+
+            # Insert new data
+            for record in records:
+                self.vp_tree.insert('', 'end', values=record)
+
+            # Refresh dropdowns as well
+            self.load_volunteer_project_dropdowns()
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to refresh assignments: {str(e)}")
 
     def project_management(self):
         """ניהול פרויקטים"""
@@ -401,6 +622,8 @@ class DatabaseGUI:
             ("Volunteers by Type", self.query_volunteers_by_type),
             ("Patients with Equipment", self.query_patients_equipment),
             ("Active Projects", self.query_active_projects),
+            ("Volunteers per Project", self.query_volunteers_per_project),
+            ("Projects by Volunteer", self.query_projects_by_volunteer),
             ("Volunteer Training Report", self.procedure_volunteer_training),
             ("Patient Statistics", self.procedure_patient_stats)
         ]
@@ -482,6 +705,75 @@ class DatabaseGUI:
                 output += f"Treatment Type: {row[2]}\n"
                 output += f"Status: {row[3]}\n"
                 output += "-" * 30 + "\n"
+
+            self.display_results(output)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Query failed: {str(e)}")
+
+    def query_volunteers_per_project(self):
+        """שאילתה: מתנדבים לפי פרויקט"""
+        try:
+            cursor = self.connection.cursor()
+            query = """
+            SELECT proj.project_name, 
+                   COUNT(vp.volunteer_id) as volunteer_count,
+                   STRING_AGG(CONCAT(p.first_name, ' ', p.last_name), ', ') as volunteers,
+                   proj.start_date, proj.end_date
+            FROM project proj
+            LEFT JOIN volunteerProject vp ON proj.project_id = vp.project_id
+            LEFT JOIN volunteer v ON vp.volunteer_id = v.volunteer_id
+            LEFT JOIN person p ON v.volunteer_id = p.id
+            GROUP BY proj.project_id, proj.project_name, proj.start_date, proj.end_date
+            ORDER BY volunteer_count DESC, proj.project_name
+            """
+            cursor.execute(query)
+            results = cursor.fetchall()
+
+            output = "VOLUNTEERS PER PROJECT REPORT\n"
+            output += "=" * 50 + "\n\n"
+
+            for row in results:
+                output += f"Project: {row[0]}\n"
+                output += f"Volunteer Count: {row[1]}\n"
+                output += f"Start Date: {row[3]}\n"
+                output += f"End Date: {row[4] if row[4] else 'Ongoing'}\n"
+                output += f"Volunteers: {row[2] if row[2] else 'None assigned'}\n"
+                output += "-" * 40 + "\n"
+
+            self.display_results(output)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Query failed: {str(e)}")
+
+    def query_projects_by_volunteer(self):
+        """שאילתה: פרויקטים לפי מתנדב"""
+        try:
+            cursor = self.connection.cursor()
+            query = """
+            SELECT CONCAT(p.first_name, ' ', p.last_name) as volunteer_name,
+                   COUNT(vp.project_id) as project_count,
+                   STRING_AGG(proj.project_name, ', ') as projects,
+                   v.skill
+            FROM volunteer v
+            JOIN person p ON v.volunteer_id = p.id
+            LEFT JOIN volunteerProject vp ON v.volunteer_id = vp.volunteer_id
+            LEFT JOIN project proj ON vp.project_id = proj.project_id
+            GROUP BY v.volunteer_id, p.first_name, p.last_name, v.skill
+            ORDER BY project_count DESC, volunteer_name
+            """
+            cursor.execute(query)
+            results = cursor.fetchall()
+
+            output = "PROJECTS BY VOLUNTEER REPORT\n"
+            output += "=" * 50 + "\n\n"
+
+            for row in results:
+                output += f"Volunteer: {row[0]}\n"
+                output += f"Skill: {row[3] if row[3] else 'Not specified'}\n"
+                output += f"Project Count: {row[1]}\n"
+                output += f"Projects: {row[2] if row[2] else 'None assigned'}\n"
+                output += "-" * 40 + "\n"
 
             self.display_results(output)
 
