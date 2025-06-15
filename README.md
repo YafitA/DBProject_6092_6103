@@ -39,6 +39,7 @@
   - [פרוצדורות](#-פרוצדורות)
   - [טריגרים](#-טריגרים)
   - [תוכניות ראשיות](#-תוכניות-ראשיות)
+- [שלב ה': ממשק גרפי](#שלב-ה-ממשק-גרפי)
 
   
 
@@ -1574,4 +1575,94 @@ $$;
 
 ![image](https://github.com/user-attachments/assets/55c3d259-cd4f-4020-b6f3-ace3984c3046)
 
+---
+# **שלב ה': ממשק גרפי**  
 
+## הוראות הפעלה של האפליקציה
+
+## דרישות מערכת (System Requirements)
+
+1. **Python 3.7 או גרסה חדשה יותר**
+2. **PostgreSQL Database Server**
+3. **PgAdmin (אופציונלי למטרות ניהול)**
+
+## התקנת תלויות (Dependencies Installation)
+
+### שלב 1: התקנת PostgreSQL Driver
+```bash
+pip install psycopg2-binary
+```
+
+או אם יש בעיות התקנה:
+```bash
+pip install psycopg2
+```
+
+### שלב 2: Tkinter (בדרך כלל מותקן עם Python)
+אם Tkinter לא מותקן:
+- **Windows**: מגיע עם Python
+- **Linux**: `sudo apt-get install python3-tk`
+- **Mac**: `brew install python-tk`
+
+## הכנת בסיס הנתונים (Database Setup)
+
+### שלב 1: יצירת בסיס נתונים
+1. פתח PgAdmin או התחבר ל-PostgreSQL דרך command line
+2. צור בסיס נתונים חדש:
+```sql
+CREATE DATABASE medical_center;
+```
+
+### שלב 2: הכנסת קובץ הגיבוי
+
+הכנס את קובץ הגיבוי Backup5.backup
+
+## הפעלת האפליקציה (Running the Application)
+
+### שלב 1: עדכון פרטי התחברות
+ערוך את הקובץ `database_gui.py` ועדכן את הפרטים הבאים:
+```python
+self.db_params = {
+    'host': 'localhost',        # כתובת השרת שלך
+    'database': 'medical_center', # שם בסיס הנתונים
+    'user': 'postgres',         # שם המשתמש שלך
+    'password': 'your_password' # הסיסמה שלך
+}
+```
+
+### שלב 2: הפעלת האפליקציה
+```bash
+python database_gui.py
+```
+
+## שימוש במערכת (Using the System)
+
+### מסך הכניסה
+1. הכנס את פרטי ההתחברות לבסיס הנתונים
+2. לחץ על "Connect"
+
+### התפריט הראשי
+המערכת כוללת 6 מסכים עיקריים:
+
+1. **Person Management** - ניהול פרטי אנשים
+2. **Volunteer Management** - ניהול מתנדבים  
+3. **Patient Management** - ניהול מטופלים
+4. **Project Management** - ניהול פרויקטים
+5. **Volunteers In Project** - ניהול הקצאות מתנדבים לפרויקטים
+6. **Reports & Queries** - דוחות ושאילתות
+7. **Exit** - יציאה מהמערכת
+
+### פעולות CRUD
+בכל מסך ניהול ניתן לבצע:
+- **Add** - הוספת רשומה חדשה
+- **Update** - עדכון רשומה קיימת
+- **Delete** - מחיקת רשומה
+- **Clear** - ניקוי הטופס
+
+### דרך העבודה
+1. **להוספת רשומה**: מלא את השדות ולחץ "Add"
+2. **לעדכון רשומה**: לחץ פעמיים על הרשומה ברשימה, ערוך את השדות ולחץ "Update"
+3. **למחיקת רשומה**: לחץ פעמיים על הרשומה ולחץ "Delete"
+
+### מסך הדוחות
+במסך "Reports & Queries" ניתן להפעיל מגוון דוחות
