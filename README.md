@@ -1646,11 +1646,10 @@ python database_gui.py
 
 1. **Person Management** - ניהול פרטי אנשים
 2. **Volunteer Management** - ניהול מתנדבים  
-3. **Patient Management** - ניהול מטופלים
-4. **Project Management** - ניהול פרויקטים
-5. **Volunteers In Project** - ניהול הקצאות מתנדבים לפרויקטים
-6. **Reports & Queries** - דוחות ושאילתות
-7. **Exit** - יציאה מהמערכת
+3. **Project Management** - ניהול פרויקטים
+4. **Volunteers In Project** - ניהול הקצאות מתנדבים לפרויקטים
+5. **Reports & Queries** - דוחות ושאילתות
+6. **Exit** - יציאה מהמערכת
 
 ### פעולות CRUD
 בכל מסך ניהול ניתן לבצע:
@@ -1666,3 +1665,35 @@ python database_gui.py
 
 ### מסך הדוחות
 במסך "Reports & Queries" ניתן להפעיל מגוון דוחות
+
+## צילומי מסך:
+
+### מסך התחברות
+
+![image](https://github.com/user-attachments/assets/3e1b15c5-d3ec-4aab-9698-e35cdcd15e2d)
+
+### מסך ראשי
+
+![image](https://github.com/user-attachments/assets/17608b66-768f-401b-8e44-d80fb2a59463)
+
+#### מסך ניהול פרטי אנשים
+
+![image](https://github.com/user-attachments/assets/e058d8cf-bb9d-440e-8d49-6436913ac140)
+
+### מסך ניהול מתנדבים
+
+![image](https://github.com/user-attachments/assets/fbfefe13-0fa9-4c0b-a294-d135adca1990)
+
+### מסך ניהול הקצאת מתנדבים לפרוייקטים
+
+![image](https://github.com/user-attachments/assets/0ca43f83-ace3-4417-924f-d2bd242851f1)
+
+### מסך ניהול פרוייקטים
+
+![image](https://github.com/user-attachments/assets/5ed0e055-6af9-4b20-8da3-a5e2e0defffe)
+
+### מסך דוחות ושאילתות
+![image](https://github.com/user-attachments/assets/a72466a6-5bd9-424c-88b7-1c1bfc4bdb5e)
+
+
+
