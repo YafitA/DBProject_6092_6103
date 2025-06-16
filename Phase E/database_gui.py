@@ -14,7 +14,7 @@ class DatabaseGUI:
         # Database connection parameters
         self.db_params = {
             'host': 'localhost',
-            'database': 'Level4Final',
+            'database': 'Medical_database',
             'user': 'postgres',
             'password': 'postgres',
             'port': '5433'
